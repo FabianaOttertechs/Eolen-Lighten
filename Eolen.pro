@@ -20,4 +20,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES +=
 
 HEADERS += \
-    ImpactVisualizer.h
+    ImpactVisualizer.h \
+    LedApiController.h
