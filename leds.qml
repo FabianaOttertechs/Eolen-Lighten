@@ -1,0 +1,262 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import ImpactVisualizer 1.0
+
+Window {
+    id: mainWindow
+    width: 900
+    height: 1200
+    visible: true
+    property bool isConnected: false
+    property bool selfTestRunning: true
+
+    // LED control properties
+    property color headLedColor: "white"
+    property color chestLedColor: "white"
+    property color bellyLedColor: "white"
+    property color feetLedColor: "white"
+
+    function setLedColor(led, color) {
+            console.log("🔄 Attempting to set", led, "to", color);
+
+            switch(led) {
+                case "head":
+                    console.log("Before head change:", headLedColor, "->", color);
+                    headLedColor = color;
+                    console.log("After head change:", headLedColor);
+                    break;
+                case "chest":
+                    chestLedColor = color;
+                    break;
+                case "belly":
+                    bellyLedColor = color;
+                    break;
+                case "feet":
+                    feetLedColor = color;
+                    break;
+            }
+
+            // Force update
+            headLed.color = Qt.binding(function() { return headLedColor; });
+            console.log("Current headLed.color:", headLed.color);
+            chestLed.color = Qt.binding(function() { return chestLedColor; });
+            bellyLed.color = Qt.binding(function() { return bellyLedColor; });
+            feetLed.color = Qt.binding(function() { return feetLedColor; });
+        }
+
+    // Function to reset all LEDs to white
+    function resetAllLeds() {
+        mainWindow.headLedColor = "white";
+        mainWindow.chestLedColor = "white";
+        mainWindow.bellyLedColor = "white";
+        mainWindow.feetLedColor = "white";
+    }
+
+    ImpactVisualizer {
+        id: impactVisualizer
+        anchors.fill: parent
+
+        // Background image
+        Image {
+            id: bodySilhouette
+            source: "qrc:/HumanBody.png"
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit
+        }
+
+        // LED indicators - now using the color properties
+        Item {
+            // Head LED
+            Rectangle {
+                id: headLed
+                width: 40; height: 40
+                radius: width/2
+                color: mainWindow.selfTestRunning ? "white" : mainWindow.headLedColor
+                border.color: "black"
+                border.width: 2
+                x: 430
+                y: 30
+            }
+
+            // Chest LED
+            Rectangle {
+                id: chestLed
+                width: 50; height: 50
+                radius: width/2
+                color: mainWindow.selfTestRunning ? "white" : mainWindow.chestLedColor
+                border.color: "black"
+                border.width: 2
+                x: 424
+                y: 200
+            }
+
+            // Belly LED
+            Rectangle {
+                id: bellyLed
+                width: 60; height: 60
+                radius: width/2
+                color: mainWindow.selfTestRunning ? "white" : mainWindow.bellyLedColor
+                border.color: "black"
+                border.width: 2
+                x: 420
+                y: 400
+            }
+
+            // Feet LED
+            Rectangle {
+                id: feetLed
+                width: 70; height: 70
+                radius: width/2
+                color: mainWindow.selfTestRunning ? "white" : mainWindow.feetLedColor
+                border.color: "black"
+                border.width: 2
+                x: 415
+                y: 900
+            }
+        }
+
+        // Self-test sequence
+        SequentialAnimation {
+            running: true
+            onStarted: console.log("Starting LED self-test...")
+            onStopped: {
+                mainWindow.selfTestRunning = false
+                console.log("LED self-test completed")
+                // Reset all LEDs to white after test
+                resetAllLeds()
+            }
+
+            // Test sequence remains the same...
+            ScriptAction { script: headLed.color = "yellow" }
+            PauseAnimation { duration: 500 }
+            ScriptAction { script: headLed.color = "black" }
+            PauseAnimation { duration: 200 }
+
+            ScriptAction { script: chestLed.color = "yellow" }
+            PauseAnimation { duration: 500 }
+            ScriptAction { script: chestLed.color = "black" }
+            PauseAnimation { duration: 200 }
+
+            ScriptAction { script: bellyLed.color = "yellow" }
+            PauseAnimation { duration: 500 }
+            ScriptAction { script: bellyLed.color = "black" }
+            PauseAnimation { duration: 200 }
+
+            ScriptAction { script: feetLed.color = "yellow" }
+            PauseAnimation { duration: 500 }
+            ScriptAction { script: feetLed.color = "black" }
+            PauseAnimation { duration: 100 }
+            ScriptAction { script: feetLed.color = "white" }
+
+            ParallelAnimation {
+                ScriptAction { script: resetAllLeds() }
+            }
+            PauseAnimation { duration: 1000 }
+        }
+
+        // Connection button
+        Button {
+            width: 100
+            height: 50
+            text: mainWindow.isConnected ? "Disconnect" : "Connect"
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            enabled: !mainWindow.selfTestRunning
+            onClicked: mainWindow.isConnected = !mainWindow.isConnected
+        }
+
+        // Debug controls - now properly connected
+        Column {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    spacing: 10
+                    padding: 20
+                    visible: !selfTestRunning
+
+                    // Head LED controls
+                    Row {
+                        spacing: 5
+                        Button {
+                            text: "Head Green"
+                            onClicked: {
+                                console.log("🟢 Head Green button pressed");
+                                setLedColor("head", "#32cd32");
+                            }
+                        }
+                        Button {
+                            text: "Head Red"
+                            onClicked: {
+                                console.log("🔴 Head Red button pressed");
+                                setLedColor("head", "red");
+                            }
+                        }
+                    }
+
+                    // Chest LED controls
+                    Row {
+                        spacing: 5
+                        Button {
+                            text: "Chest Green"
+                            onClicked: {
+                                console.log("🟢 Chest Green button pressed");
+                                setLedColor("chest", "#32cd32");
+                            }
+                        }
+                        Button {
+                            text: "Chest Red"
+                            onClicked: {
+                                console.log("🔴 Chest Red button pressed");
+                                setLedColor("chest", "red");
+                            }
+                        }
+                    }
+
+                    // Belly LED controls
+                    Row {
+                        spacing: 5
+                        Button {
+                            text: "Belly Green"
+                            onClicked: {
+                                console.log("🟢 Belly Green button pressed");
+                                setLedColor("belly", "#32cd32");
+                            }
+                        }
+                        Button {
+                            text: "Belly Red"
+                            onClicked: {
+                                console.log("🔴 Belly Red button pressed");
+                                setLedColor("belly", "red");
+                            }
+                        }
+                    }
+
+                    // Feet LED controls
+                    Row {
+                        spacing: 5
+                        Button {
+                            text: "Feet Green"
+                            onClicked: {
+                                console.log("🟢 Feet Green button pressed");
+                                setLedColor("feet", "#32cd32");
+                            }
+                        }
+                        Button {
+                            text: "Feet Red"
+                            onClicked: {
+                                console.log("🔴 Feet Red button pressed");
+                                setLedColor("feet", "red");
+                            }
+                        }
+                    }
+
+                    // Reset button
+                    Button {
+                        text: "Reset All White"
+                        onClicked: {
+                            console.log("⚪ Reset All button pressed");
+                            resetAllLeds();
+                        }
+                    }
+                }
+    }
+}
