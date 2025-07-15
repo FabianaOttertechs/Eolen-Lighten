@@ -32,6 +32,16 @@ public slots:
     void triggerBellyImpact();
     void triggerFeetImpact();
     void resetAllImpacts();
+    void setLedImpact(const QString& led, bool impact) {
+        if (led == "head") setHeadImpact(impact);
+        else if (led == "chest") setChestImpact(impact);
+        else if (led == "belly") setBellyImpact(impact);
+        else if (led == "feet") setFeetImpact(impact);
+    }
+
+    void setLedColor(const QString& led, const QString& color) {
+        setLedImpact(led, color == "red");
+    }
 
 signals:
     void headImpactChanged(bool headImpact);

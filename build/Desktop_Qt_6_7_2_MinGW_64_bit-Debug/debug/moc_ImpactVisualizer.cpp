@@ -53,7 +53,12 @@ constexpr auto qt_meta_stringdata_CLASSImpactVisualizerENDCLASS = QtMocHelpers::
     "triggerChestImpact",
     "triggerBellyImpact",
     "triggerFeetImpact",
-    "resetAllImpacts"
+    "resetAllImpacts",
+    "setLedImpact",
+    "led",
+    "impact",
+    "setLedColor",
+    "color"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -66,29 +71,31 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
-       4,  121, // properties
+      15,   14, // methods
+       4,  143, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   92,    2, 0x06,    5 /* Public */,
-       4,    1,   95,    2, 0x06,    7 /* Public */,
-       6,    1,   98,    2, 0x06,    9 /* Public */,
-       8,    1,  101,    2, 0x06,   11 /* Public */,
+       1,    1,  104,    2, 0x06,    5 /* Public */,
+       4,    1,  107,    2, 0x06,    7 /* Public */,
+       6,    1,  110,    2, 0x06,    9 /* Public */,
+       8,    1,  113,    2, 0x06,   11 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      10,    1,  104,    2, 0x0a,   13 /* Public */,
-      11,    1,  107,    2, 0x0a,   15 /* Public */,
-      12,    1,  110,    2, 0x0a,   17 /* Public */,
-      13,    1,  113,    2, 0x0a,   19 /* Public */,
-      14,    0,  116,    2, 0x0a,   21 /* Public */,
-      15,    0,  117,    2, 0x0a,   22 /* Public */,
-      16,    0,  118,    2, 0x0a,   23 /* Public */,
-      17,    0,  119,    2, 0x0a,   24 /* Public */,
-      18,    0,  120,    2, 0x0a,   25 /* Public */,
+      10,    1,  116,    2, 0x0a,   13 /* Public */,
+      11,    1,  119,    2, 0x0a,   15 /* Public */,
+      12,    1,  122,    2, 0x0a,   17 /* Public */,
+      13,    1,  125,    2, 0x0a,   19 /* Public */,
+      14,    0,  128,    2, 0x0a,   21 /* Public */,
+      15,    0,  129,    2, 0x0a,   22 /* Public */,
+      16,    0,  130,    2, 0x0a,   23 /* Public */,
+      17,    0,  131,    2, 0x0a,   24 /* Public */,
+      18,    0,  132,    2, 0x0a,   25 /* Public */,
+      19,    2,  133,    2, 0x0a,   26 /* Public */,
+      22,    2,  138,    2, 0x0a,   29 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -106,6 +113,8 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString, QMetaType::Bool,   20,   21,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   20,   23,
 
  // properties: name, type, flags
        3, QMetaType::Bool, 0x00015103, uint(0), 0,
@@ -166,7 +175,15 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         // method 'triggerFeetImpact'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'resetAllImpacts'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'setLedImpact'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'setLedColor'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>
     >,
     nullptr
 } };
@@ -190,6 +207,8 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 10: _t->triggerBellyImpact(); break;
         case 11: _t->triggerFeetImpact(); break;
         case 12: _t->resetAllImpacts(); break;
+        case 13: _t->setLedImpact((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<bool>>(_a[2]))); break;
+        case 14: _t->setLedColor((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -268,13 +287,13 @@ int ImpactVisualizer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 15;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 15)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 13;
+        _id -= 15;
     }else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty
             || _c == QMetaObject::RegisterPropertyMetaType) {

@@ -9,8 +9,14 @@ LedApiController::LedApiController(ImpactVisualizer* visualizer, QObject* parent
 }
 
 void LedApiController::sendLedCommand(const QString& led, const QString& color) {
-    QUrl apiUrl("http://your-api-server.com/api/led");
+    QUrl apiUrl("https://18a8d84625ea.ngrok-free.app/api/led");
     QNetworkRequest request(apiUrl);
+
+    // Configure SSL (ignore errors for testing, remove for production)
+    QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+    config.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(config);
+
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QJsonObject payload{
@@ -23,18 +29,29 @@ void LedApiController::sendLedCommand(const QString& led, const QString& color) 
 
 void LedApiController::handleApiResponse(QNetworkReply* reply) {
     if (reply->error() != QNetworkReply::NoError) {
+        qDebug() << "API Error:" << reply->errorString();
         emit apiError(reply->errorString());
         reply->deleteLater();
         return;
     }
 
-    QJsonDocument response = QJsonDocument::fromJson(reply->readAll());
-    if (response.isObject()) {
+    QJsonParseError parseError;
+    QJsonDocument response = QJsonDocument::fromJson(reply->readAll(), &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        qDebug() << "JSON Parse Error:" << parseError.errorString();
+        emit apiError("Invalid JSON response");
+    }
+    else if (response.isObject()) {
         QJsonObject json = response.object();
-        processLedCommand(
-            json["led"].toString(),
-            json["color"].toString()
-            );
+        if (json.contains("error")) {
+            emit apiError(json["error"].toString());
+        } else {
+            processLedCommand(
+                json["led"].toString(),
+                json["color"].toString()
+                );
+        }
     }
     reply->deleteLater();
 }

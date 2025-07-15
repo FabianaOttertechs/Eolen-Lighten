@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QJsonObject>
+#include <QJsonDocument>
+#include <QNetworkReply>
 
 class ImpactVisualizer; // Forward declaration
 

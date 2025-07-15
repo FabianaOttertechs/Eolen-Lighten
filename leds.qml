@@ -165,6 +165,24 @@ Window {
             onClicked: mainWindow.isConnected = !mainWindow.isConnected
         }
 
+
+        Column {
+                anchors.left: parent.left
+                anchors.top: parent.top
+                spacing: 10
+                padding: 20
+
+                Button {
+                    text: "API: Head Impact"
+                    onClicked: apiController.sendLedCommand("head", "red")
+                }
+
+                Button {
+                    text: "API: Clear Impacts"
+                    onClicked: apiController.sendLedCommand("all", "white")
+                }
+            }
+
         // Debug controls - now properly connected
         Column {
                     anchors.right: parent.right

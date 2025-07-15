@@ -3,6 +3,7 @@
 #include <QDebug>  // For debugging
 #include "ImpactVisualizer.h"
 #include "LedApiController.h"
+#include<QQmlContext>
 
 int main(int argc, char *argv[])
 {
