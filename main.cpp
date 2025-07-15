@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QDebug>  // For debugging
 #include "ImpactVisualizer.h"
+#include "LedApiController.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,13 @@ int main(int argc, char *argv[])
     qmlRegisterType<ImpactVisualizer>("ImpactVisualizer", 1, 0, "ImpactVisualizer");
 
     QQmlApplicationEngine engine;
+
+    ImpactVisualizer visualizer;
+
+    // Then create API controller that uses it
+    LedApiController apiController(&visualizer);
+    engine.rootContext()->setContextProperty("apiController", &apiController);
+
     // Set up the main QML file
     const QUrl url(QStringLiteral("qrc:/leds.qml"));
 
@@ -28,4 +36,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
