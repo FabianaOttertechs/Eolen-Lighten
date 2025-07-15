@@ -69,12 +69,12 @@ Window {
             // Head LED
             Rectangle {
                 id: headLed
-                width: 40; height: 40
+                width: 50; height: 50
                 radius: width/2
                 color: mainWindow.selfTestRunning ? "white" : mainWindow.headLedColor
                 border.color: "black"
                 border.width: 2
-                x: 430
+                x: 425
                 y: 30
             }
 
@@ -86,31 +86,31 @@ Window {
                 color: mainWindow.selfTestRunning ? "white" : mainWindow.chestLedColor
                 border.color: "black"
                 border.width: 2
-                x: 424
+                x: 425
                 y: 200
             }
 
             // Belly LED
             Rectangle {
                 id: bellyLed
-                width: 60; height: 60
+                width: 50; height: 50
                 radius: width/2
                 color: mainWindow.selfTestRunning ? "white" : mainWindow.bellyLedColor
                 border.color: "black"
                 border.width: 2
-                x: 420
+                x: 425
                 y: 400
             }
 
             // Feet LED
             Rectangle {
                 id: feetLed
-                width: 70; height: 70
+                width: 50; height: 50
                 radius: width/2
                 color: mainWindow.selfTestRunning ? "white" : mainWindow.feetLedColor
                 border.color: "black"
                 border.width: 2
-                x: 415
+                x: 425
                 y: 900
             }
         }
