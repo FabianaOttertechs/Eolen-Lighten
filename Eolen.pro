@@ -1,6 +1,7 @@
 QT += quick
 
 SOURCES += \
+        LedApiController.cpp \
         impactVisualizer.cpp \
         main.cpp
 
