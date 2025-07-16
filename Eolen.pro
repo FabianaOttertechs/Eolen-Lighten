@@ -1,7 +1,6 @@
 QT += qml quick quickcontrols2 network
 
 SOURCES += \
-        LedApiController.cpp \
         impactVisualizer.cpp \
         main.cpp
 
@@ -21,5 +20,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES +=
 
 HEADERS += \
-    ImpactVisualizer.h \
-    LedApiController.h
+    ImpactVisualizer.h

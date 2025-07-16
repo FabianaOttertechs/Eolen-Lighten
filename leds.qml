@@ -16,12 +16,12 @@ Window {
     property color bellyLedColor: "white"
     property color feetLedColor: "white"
 
-    function sendHttpRequest(zone, action) {
+    function sendLedCommand(zone, color) {
         var xhr = new XMLHttpRequest();
-        var url = "http://localhost:5000/api/impact";
+        var url = "http://localhost:5000/api/led";
         var data = JSON.stringify({
-            "zone": zone,
-            "action": action
+            led: zone,
+            color: color
         });
 
         xhr.open("POST", url);
@@ -32,15 +32,15 @@ Window {
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
                     console.log("Success:", response);
-                    if (response.color) {
-                        setLedColor(zone, response.color);
-                    }
+
+                    // Atualização dupla (opcional):
+                    impactVisualizer.setLedColor(zone, color); // Atualiza o C++
+                    setLedColor(zone, color); // Atualiza o QML
                 } else {
                     console.error("Error:", xhr.status, xhr.responseText);
                 }
             }
         };
-
         xhr.send(data);
     }
 
@@ -205,7 +205,7 @@ Window {
                             onClicked: {
                                 console.log("🟢 Head Green button pressed");
                                 setLedColor("head", "#32cd32");
-                                sendHttpRequest("head", "safe");
+                                sendLedCommand("head", "green");
                             }
                         }
                         Button {
@@ -213,7 +213,7 @@ Window {
                             onClicked: {
                                 console.log("🔴 Head Red button pressed");
                                 setLedColor("head", "red");
-                                sendHttpRequest("head", "trigger");
+                                sendLedCommand("head", "red");
                             }
                         }
                     }
@@ -226,6 +226,7 @@ Window {
                             onClicked: {
                                 console.log("🟢 Chest Green button pressed");
                                 setLedColor("chest", "#32cd32");
+                                sendLedCommand("chest", "green");
                             }
                         }
                         Button {
@@ -233,6 +234,7 @@ Window {
                             onClicked: {
                                 console.log("🔴 Chest Red button pressed");
                                 setLedColor("chest", "red");
+                                sendLedCommand("chest", "red");
                             }
                         }
                     }
@@ -245,6 +247,7 @@ Window {
                             onClicked: {
                                 console.log("🟢 Belly Green button pressed");
                                 setLedColor("belly", "#32cd32");
+                                sendLedCommand("belly", "green");
                             }
                         }
                         Button {
@@ -252,6 +255,7 @@ Window {
                             onClicked: {
                                 console.log("🔴 Belly Red button pressed");
                                 setLedColor("belly", "red");
+                                sendLedCommand("belly", "red");
                             }
                         }
                     }
@@ -264,6 +268,7 @@ Window {
                             onClicked: {
                                 console.log("🟢 Feet Green button pressed");
                                 setLedColor("feet", "#32cd32");
+                                sendLedCommand("feet", "green");
                             }
                         }
                         Button {
@@ -271,20 +276,29 @@ Window {
                             onClicked: {
                                 console.log("🔴 Feet Red button pressed");
                                 setLedColor("feet", "red");
+                                sendLedCommand("feet", "red");
                             }
                         }
                     }
 
-                    // Reset button
-        Button {
-            text: "Reset All via API"
-            onClicked: {
-                console.log("⚪ Reset All button pressed");
-                ["head", "chest", "belly", "feet"].forEach(zone => {
-                    sendHttpRequest(zone, "reset")
-                });
-            }
-        }
+                    Button {
+                        text: "Reset All via API"
+                        onClicked: {
+                            console.log("⚪ Reset All button pressed");
+
+                            var xhr = new XMLHttpRequest();
+                            xhr.open("POST", "http://localhost:5000/api/led/all");
+                            xhr.setRequestHeader("Content-Type", "application/json");
+
+                            xhr.onreadystatechange = function() {
+                                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                                    resetAllLeds(); // Atualiza UI após confirmação
+                                }
+                            };
+
+                            xhr.send(JSON.stringify({})); // Corpo vazio ou com {"action": "reset"}
+                        }
                     }
+                }
     }
 }

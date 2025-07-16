@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # Para evitar problemas de CORS com QML
+from flask_cors import CORS
+import time
+import threading
 
 app = Flask(__name__)
-CORS(app)  # Permite requisições do QML
+CORS(app)
 
-# Estado dos LEDs (simulando seu ImpactVisualizer.cpp)
+# Estado dos LEDs
 led_states = {
     "head": {"impact": False, "color": "white"},
     "chest": {"impact": False, "color": "white"},
@@ -12,52 +14,62 @@ led_states = {
     "feet": {"impact": False, "color": "white"}
 }
 
-@app.route('/api/impact', methods=['POST'])
-def handle_impact():
+@app.route('/api/led', methods=['POST'])  # Endpoint unificado
+def handle_led():
     data = request.get_json()
-    zone = data.get('zone')
-    action = data.get('action')
+    
+    # Validação
+    if not data or 'led' not in data or 'color' not in data:
+        return jsonify({"error": "Requira 'led' e 'color'"}), 400
+    
+    zone = data['led']
+    color = data['color'].lower()
     
     if zone not in led_states:
         return jsonify({"error": "Zona inválida"}), 400
-    
-    # Simula o comportamento do seu código C++
-    if action == "trigger":
+
+    # Lógica principal
+    if color == "red":
         led_states[zone]["impact"] = True
         led_states[zone]["color"] = "red"
-        # Simula o timer de reset após 1 segundo
-        reset_after_delay(zone)
-        return jsonify({"status": f"{zone} impact triggered", "color": "red"})
-    
-    elif action == "reset":
+        reset_after_delay(zone)  # Auto-reset após 1 segundo
+        status = "DANGER"
+    elif color == "green":
+        led_states[zone]["impact"] = False
+        led_states[zone]["color"] = "green"
+        status = "SAFE"
+    elif color == "white":
         led_states[zone]["impact"] = False
         led_states[zone]["color"] = "white"
-        return jsonify({"status": f"{zone} reset", "color": "white"})
-    
-    return jsonify({"error": "Ação inválida"}), 400
+        status = "NEUTRAL"
+    else:
+        return jsonify({"error": "Cor inválida (use red/green/white)"}), 400
 
-@app.route('/api/impact/all', methods=['POST'])
+    print(f"LED {zone} -> {color} ({status})")
+    return jsonify({
+        "status": status,
+        "led": zone,
+        "color": color,
+        "timestamp": time.time()
+    })
+
+@app.route('/api/led/all', methods=['POST'])  # Novo endpoint para reset
 def reset_all():
     for zone in led_states:
         led_states[zone]["impact"] = False
         led_states[zone]["color"] = "white"
-    return jsonify({"status": "all zones reset", "color": "white"})
+    return jsonify({"status": "ALL_RESET"})
 
-@app.route('/api/impact/status', methods=['GET'])
+@app.route('/api/led/status', methods=['GET'])
 def get_status():
     return jsonify(led_states)
 
 def reset_after_delay(zone):
-    # Simula o QTimer::singleShot do seu código C++
-    import threading
     def reset():
-        import time
-        time.sleep(1)  # 1 segundo de delay
+        time.sleep(1)
         led_states[zone]["impact"] = False
         led_states[zone]["color"] = "white"
-    
-    thread = threading.Thread(target=reset)
-    thread.start()
+    threading.Thread(target=reset).start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
