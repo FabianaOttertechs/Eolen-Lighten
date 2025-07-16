@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import ImpactVisualizer 1.0
-import QtQuick.Network
 
 Window {
     id: mainWindow
@@ -17,78 +16,64 @@ Window {
     property color bellyLedColor: "white"
     property color feetLedColor: "white"
 
-    property alias networkManager: networkManagerInstance
-        NetworkAccessManager {
-            id: networkManagerInstance
-        }
+    function sendHttpRequest(zone, action) {
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:5000/api/impact";
+        var data = JSON.stringify({
+            "zone": zone,
+            "action": action
+        });
 
-        function sendLedCommand(zone, action) {
-            var request = new XMLHttpRequest()
-            request.open("POST", "http://localhost:5000/api/impact")
-            request.setRequestHeader("Content-Type", "application/json")
-            request.send(JSON.stringify({ zone, action }))
-        }
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-
-    function setLedColor(led, color) {
-            console.log("🔄 Attempting to set", led, "to", color);
-
-            switch(led) {
-                case "head":
-                    console.log("Before head change:", headLedColor, "->", color);
-                    headLedColor = color;
-                    console.log("After head change:", headLedColor);
-                    break;
-                case "chest":
-                    chestLedColor = color;
-                    break;
-                case "belly":
-                    bellyLedColor = color;
-                    break;
-                case "feet":
-                    feetLedColor = color;
-                    break;
-            }
-
-            // Force update
-            headLed.color = Qt.binding(function() { return headLedColor; });
-            console.log("Current headLed.color:", headLed.color);
-            chestLed.color = Qt.binding(function() { return chestLedColor; });
-            bellyLed.color = Qt.binding(function() { return bellyLedColor; });
-            feetLed.color = Qt.binding(function() { return feetLedColor; });
-        }
-
-    // Function to reset all LEDs to white
-    function resetAllLeds() {
-        mainWindow.headLedColor = "white";
-        mainWindow.chestLedColor = "white";
-        mainWindow.bellyLedColor = "white";
-        mainWindow.feetLedColor = "white";
-    }
-
-    Item {
-        id: apiController
-
-        function sendLedCommand(zone, action) {
-            var url = "http://localhost:5000/api/impact"
-            var request = new XMLHttpRequest()
-            var jsonData = JSON.stringify({"zone": zone, "action": action})
-
-            request.open("POST", url)
-            request.setRequestHeader("Content-Type", "application/json")
-
-            request.onreadystatechange = function() {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    var response = JSON.parse(request.responseText)
-                    console.log("API Response:", response)
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log("Success:", response);
                     if (response.color) {
-                        setLedColor(zone, response.color)
+                        setLedColor(zone, response.color);
                     }
+                } else {
+                    console.error("Error:", xhr.status, xhr.responseText);
                 }
             }
+        };
 
-            request.send(jsonData)
+        xhr.send(data);
+    }
+
+    function setLedColor(led, color) {
+        console.log("Setting", led, "to", color);
+
+        switch(led) {
+            case "head":
+                headLedColor = color;
+                break;
+            case "chest":
+                chestLedColor = color;
+                break;
+            case "belly":
+                bellyLedColor = color;
+                break;
+            case "feet":
+                feetLedColor = color;
+                break;
         }
+
+        // Force update
+        headLed.color = Qt.binding(function() { return headLedColor; });
+        chestLed.color = Qt.binding(function() { return chestLedColor; });
+        bellyLed.color = Qt.binding(function() { return bellyLedColor; });
+        feetLed.color = Qt.binding(function() { return feetLedColor; });
+    }
+
+    function resetAllLeds() {
+        headLedColor = "white";
+        chestLedColor = "white";
+        bellyLedColor = "white";
+        feetLedColor = "white";
     }
 
     ImpactVisualizer {
@@ -193,36 +178,18 @@ Window {
             PauseAnimation { duration: 1000 }
         }
 
-        // Connection button
-        Button {
-            width: 100
-            height: 50
-            text: mainWindow.isConnected ? "Disconnect" : "Connect"
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            enabled: !mainWindow.selfTestRunning
-            onClicked: mainWindow.isConnected = !mainWindow.isConnected
-        }
+        // Connection button para o caso da Serial
+        // Button {
+        //     width: 100
+        //     height: 50
+        //     text: mainWindow.isConnected ? "Disconnect" : "Connect"
+        //     anchors.right: parent.right
+        //     anchors.verticalCenter: parent.verticalCenter
+        //     enabled: !mainWindow.selfTestRunning
+        //     onClicked: mainWindow.isConnected = !mainWindow.isConnected
+        // }
 
-
-        Column {
-                anchors.left: parent.left
-                anchors.top: parent.top
-                spacing: 10
-                padding: 20
-
-                Button {
-                    text: "API: Head Impact"
-                    onClicked: apiController.sendLedCommand("head", "red")
-                }
-
-                Button {
-                    text: "API: Clear Impacts"
-                    onClicked: apiController.sendLedCommand("all", "white")
-                }
-            }
-
-        // Debug controls - now properly connected
+    // Debug controls - now properly connected
         Column {
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -238,6 +205,7 @@ Window {
                             onClicked: {
                                 console.log("🟢 Head Green button pressed");
                                 setLedColor("head", "#32cd32");
+                                sendHttpRequest("head", "safe");
                             }
                         }
                         Button {
@@ -245,6 +213,7 @@ Window {
                             onClicked: {
                                 console.log("🔴 Head Red button pressed");
                                 setLedColor("head", "red");
+                                sendHttpRequest("head", "trigger");
                             }
                         }
                     }
@@ -307,13 +276,15 @@ Window {
                     }
 
                     // Reset button
-                    Button {
-                        text: "Reset All White"
-                        onClicked: {
-                            console.log("⚪ Reset All button pressed");
-                            resetAllLeds();
-                        }
+        Button {
+            text: "Reset All via API"
+            onClicked: {
+                console.log("⚪ Reset All button pressed");
+                ["head", "chest", "belly", "feet"].forEach(zone => {
+                    sendHttpRequest(zone, "reset")
+                });
+            }
+        }
                     }
-                }
     }
 }

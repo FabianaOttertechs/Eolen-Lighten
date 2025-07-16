@@ -308,6 +308,7 @@ Makefile: ../../Eolen.pro C:/Qt/6.7.2/mingw_64/mkspecs/win32-g++/qmake.conf C:/Q
 		C:/Qt/6.7.2/mingw_64/mkspecs/features/yacc.prf \
 		C:/Qt/6.7.2/mingw_64/mkspecs/features/lex.prf \
 		../../Eolen.pro \
+		C:/Qt/6.7.2/mingw_64/lib/Qt6QuickControls2.prl \
 		C:/Qt/6.7.2/mingw_64/lib/Qt6Quick.prl \
 		C:/Qt/6.7.2/mingw_64/lib/Qt6OpenGL.prl \
 		C:/Qt/6.7.2/mingw_64/lib/Qt6Gui.prl \
@@ -557,6 +558,7 @@ C:/Qt/6.7.2/mingw_64/mkspecs/features/exceptions.prf:
 C:/Qt/6.7.2/mingw_64/mkspecs/features/yacc.prf:
 C:/Qt/6.7.2/mingw_64/mkspecs/features/lex.prf:
 ../../Eolen.pro:
+C:/Qt/6.7.2/mingw_64/lib/Qt6QuickControls2.prl:
 C:/Qt/6.7.2/mingw_64/lib/Qt6Quick.prl:
 C:/Qt/6.7.2/mingw_64/lib/Qt6OpenGL.prl:
 C:/Qt/6.7.2/mingw_64/lib/Qt6Gui.prl:
