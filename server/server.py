@@ -1,146 +1,63 @@
 from flask import Flask, request, jsonify
-import datetime
-from flask_cors import CORS
+from flask_cors import CORS  # Para evitar problemas de CORS com QML
 
 app = Flask(__name__)
+CORS(app)  # Permite requisições do QML
 
-CORS(app)
-
-# LED states storage
+# Estado dos LEDs (simulando seu ImpactVisualizer.cpp)
 led_states = {
-    'head': 'white',
-    'chest': 'white',
-    'belly': 'white',
-    'feet': 'white'
+    "head": {"impact": False, "color": "white"},
+    "chest": {"impact": False, "color": "white"},
+    "belly": {"impact": False, "color": "white"},
+    "feet": {"impact": False, "color": "white"}
 }
 
-@app.route('/api/led', methods=['POST'])
-def set_led():
+@app.route('/api/impact', methods=['POST'])
+def handle_impact():
     data = request.get_json()
+    zone = data.get('zone')
+    action = data.get('action')
     
-    # Input validation
-    if not data or 'led' not in data or 'color' not in data:
-        return jsonify({'error': 'Missing parameters'}), 400
+    if zone not in led_states:
+        return jsonify({"error": "Zona inválida"}), 400
     
-    led = data['led'].lower()
-    color = data['color'].lower()
+    # Simula o comportamento do seu código C++
+    if action == "trigger":
+        led_states[zone]["impact"] = True
+        led_states[zone]["color"] = "red"
+        # Simula o timer de reset após 1 segundo
+        reset_after_delay(zone)
+        return jsonify({"status": f"{zone} impact triggered", "color": "red"})
     
-    # Special case: reset all LEDs
-    if led == 'all':
-        for key in led_states:
-            led_states[key] = color
-        print(f"{datetime.datetime.now()} - All LEDs set to {color}")
-        return jsonify({'status': 'success', 'action': 'set_all', 'color': color})
+    elif action == "reset":
+        led_states[zone]["impact"] = False
+        led_states[zone]["color"] = "white"
+        return jsonify({"status": f"{zone} reset", "color": "white"})
     
-    # Validate LED and color
-    valid_leds = ['head', 'chest', 'belly', 'feet']
-    valid_colors = ['white', 'red', 'green']
-    
-    if led not in valid_leds:
-        return jsonify({'error': f'Invalid LED. Valid options: {valid_leds}'}), 400
-    if color not in valid_colors:
-        return jsonify({'error': f'Invalid color. Valid options: {valid_colors}'}), 400
-    
-    # Update state
-    led_states[led] = color
-    print(f"{datetime.datetime.now()} - LED {led} set to {color} (From IP: {request.remote_addr})")
-    
-    return jsonify({
-        'status': 'success',
-        'led': led,
-        'color': color,
-        'timestamp': datetime.datetime.now().isoformat()
-    })
+    return jsonify({"error": "Ação inválida"}), 400
 
-@app.route('/api/leds', methods=['GET'])
-def get_leds():
+@app.route('/api/impact/all', methods=['POST'])
+def reset_all():
+    for zone in led_states:
+        led_states[zone]["impact"] = False
+        led_states[zone]["color"] = "white"
+    return jsonify({"status": "all zones reset", "color": "white"})
+
+@app.route('/api/impact/status', methods=['GET'])
+def get_status():
     return jsonify(led_states)
 
-@app.route('/control')
-def control_panel():
-    return '''
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>LED Control Panel</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .led-section { margin: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; width: 300px; }
-            button { padding: 8px 15px; margin: 5px; cursor: pointer; }
-            .red { background: #ff6b6b; color: white; }
-            .green { background: #51cf66; color: white; }
-            .white { background: #f8f9fa; border: 1px solid #ddd; }
-            .current-state { margin-top: 10px; font-weight: bold; }
-        </style>
-    </head>
-    <body>
-        <h1>LED Control Panel</h1>
-        <p>Controls your Qt application's LEDs in real-time.</p>
-
-        <!-- Head LED -->
-        <div class="led-section">
-            <h3>Head</h3>
-            <button class="red" onclick="sendCommand('head', 'red')">Red</button>
-            <button class="green" onclick="sendCommand('head', 'green')">Green</button>
-            <button class="white" onclick="sendCommand('head', 'white')">White</button>
-            <div class="current-state">Current: <span id="head-state">white</span></div>
-        </div>
-
-        <!-- Chest LED (repeat for belly/feet) -->
-        <div class="led-section">
-            <h3>Chest</h3>
-            <button class="red" onclick="sendCommand('chest', 'red')">Red</button>
-            <button class="green" onclick="sendCommand('chest', 'green')">Green</button>
-            <button class="white" onclick="sendCommand('chest', 'white')">White</button>
-            <div class="current-state">Current: <span id="chest-state">white</span></div>
-        </div>
-
-        <!-- All LEDs -->
-        <div class="led-section">
-            <h3>All LEDs</h3>
-            <button class="red" onclick="sendCommand('all', 'red')">All Red</button>
-            <button class="green" onclick="sendCommand('all', 'green')">All Green</button>
-            <button class="white" onclick="sendCommand('all', 'white')">Reset All</button>
-        </div>
-
-        <script>
-            // Fetch current LED states on page load
-            fetch('/api/leds')
-                .then(response => response.json())
-                .then(data => {
-                    Object.keys(data).forEach(led => {
-                        document.getElementById(`${led}-state`).textContent = data[led];
-                    });
-                });
-
-            // Send commands to Flask (which forwards to Qt)
-            function sendCommand(led, color) {
-                fetch('/api/led', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ led, color })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (led === 'all') {
-                        // Update all states
-                        Object.keys(data).forEach(led => {
-                            document.getElementById(`${led}-state`).textContent = color;
-                        });
-                    } else {
-                        // Update single LED
-                        document.getElementById(`${led}-state`).textContent = color;
-                    }
-                    alert(`Success: ${led} set to ${color}`);
-                })
-                .catch(error => alert(`Error: ${error}`));
-            }
-        </script>
-    </body>
-    </html>
-    '''
+def reset_after_delay(zone):
+    # Simula o QTimer::singleShot do seu código C++
+    import threading
+    def reset():
+        import time
+        time.sleep(1)  # 1 segundo de delay
+        led_states[zone]["impact"] = False
+        led_states[zone]["color"] = "white"
+    
+    thread = threading.Thread(target=reset)
+    thread.start()
 
 if __name__ == '__main__':
-    print("Starting LED API server on http://localhost:5000")
-    print("Test page available at http://localhost:5000/test")
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -54,6 +54,7 @@ private:
     bool m_chestImpact;
     bool m_bellyImpact;
     bool m_feetImpact;
+
 };
 
 #endif // IMPACTVISUALIZER_H

@@ -1,4 +1,4 @@
-QT += quick
+QT += qml quick quickcontrols2 network
 
 SOURCES += \
         LedApiController.cpp \
