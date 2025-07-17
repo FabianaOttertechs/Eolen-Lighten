@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LED Control Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .led-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .led-group h3 {
+            margin: 0 0 10px 0;
+            color: #555;
+        }
+        .led-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-red {
+            background-color: #ff4444;
+            color: white;
+        }
+        .btn-red:hover {
+            background-color: #cc0000;
+        }
+        .btn-green {
+            background-color: #32cd32;
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: #228b22;
+        }
+        .btn-white {
+            background-color: #ffffff;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+        .btn-white:hover {
+            background-color: #f0f0f0;
+        }
+        .control-group {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .control-group h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .global-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-demo {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-demo:hover {
+            background-color: #45a049;
+        }
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #da190b;
+        }
+        .btn-reset {
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-reset:hover {
+            background-color: #1976D2;
+        }
+        .status-display {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+        .status-display h4 {
+            margin: 0 0 10px 0;
+            color: #2e7d32;
+        }
+        .status-content {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            color: #333;
+        }
+        .connection-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 LED Control Test Page</h1>
+        
+        <div id="connection-status" class="connection-status disconnected">
+            ❌ Disconnected
+        </div>
+
+        <div class="led-group">
+            <h3>👤 Head LED</h3>
+            <div class="led-controls">
+                <button class="btn-red" onclick="setLed('head', 'red')">Red</button>
+                <button class="btn-green" onclick="setLed('head', 'green')">Green</button>
+                <button class="btn-white" onclick="setLed('head', 'white')">White</button>
+            </div>
+        </div>
+
+        <div class="led-group">
+            <h3>🫁 Chest LED</h3>
+            <div class="led-controls">
+                <button class="btn-red" onclick="setLed('chest', 'red')">Red</button>
+                <button class="btn-green" onclick="setLed('chest', 'green')">Green</button>
+                <button class="btn-white" onclick="setLed('chest', 'white')">White</button>
+            </div>
+        </div>
+
+        <div class="led-group">
+            <h3>🫃 Belly LED</h3>
+            <div class="led-controls">
+                <button class="btn-red" onclick="setLed('belly', 'red')">Red</button>
+                <button class="btn-green" onclick="setLed('belly', 'green')">Green</button>
+                <button class="btn-white" onclick="setLed('belly', 'white')">White</button>
+            </div>
+        </div>
+
+        <div class="led-group">
+            <h3>🦶 Feet LED</h3>
+            <div class="led-controls">
+                <button class="btn-red" onclick="setLed('feet', 'red')">Red</button>
+                <button class="btn-green" onclick="setLed('feet', 'green')">Green</button>
+                <button class="btn-white" onclick="setLed('feet', 'white')">White</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🎮 Global Controls</h3>
+            <div class="global-controls">
+                <button class="btn-demo" onclick="runDemo()">🎬 Run Demo</button>
+                <button class="btn-danger" onclick="simulateDanger()">🚨 Danger Mode</button>
+                <button class="btn-demo" onclick="simulateSafe()">✅ Safe Mode</button>
+                <button class="btn-reset" onclick="resetAll()">🔄 Reset All</button>
+                <button class="btn-reset" onclick="getStatus()">📊 Get Status</button>
+            </div>
+        </div>
+
+        <div class="status-display">
+            <h4>📋 Response Log</h4>
+            <div id="response-log" class="status-content">Ready to send commands...</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:5000';
+        const responseLog = document.getElementById('response-log');
+        const connectionStatus = document.getElementById('connection-status');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}\n`;
+            responseLog.textContent += logMessage;
+            responseLog.scrollTop = responseLog.scrollHeight;
+            
+            // Update connection status
+            if (type === 'success') {
+                connectionStatus.className = 'connection-status connected';
+                connectionStatus.textContent = '✅ Connected';
+            } else if (type === 'error') {
+                connectionStatus.className = 'connection-status disconnected';
+                connectionStatus.textContent = '❌ Disconnected';
+            }
+        }
+
+        async function setLed(zone, color) {
+            try {
+                log(`Setting ${zone} LED to ${color}...`);
+                
+                const response = await fetch(`${BASE_URL}/api/led`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        led: zone,
+                        color: color
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Success: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const error = await response.text();
+                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function resetAll() {
+            try {
+                log('Resetting all LEDs...');
+                
+                const response = await fetch(`${BASE_URL}/api/led/all`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ All LEDs reset: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const error = await response.text();
+                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getStatus() {
+            try {
+                log('Getting LED status...');
+                
+                const response = await fetch(`${BASE_URL}/api/led/status`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`📊 Status: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    const error = await response.text();
+                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function runDemo() {
+            log('🎬 Starting demo sequence...');
+            
+            const sequence = [
+                { zone: 'head', color: 'red' },
+                { zone: 'chest', color: 'green' },
+                { zone: 'belly', color: 'red' },
+                { zone: 'feet', color: 'green' }
+            ];
+
+            for (const step of sequence) {
+                await setLed(step.zone, step.color);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            await resetAll();
+            log('🎬 Demo sequence completed!');
+        }
+
+        async function simulateDanger() {
+            log('🚨 Simulating danger scenario...');
+            
+            const zones = ['head', 'chest', 'belly', 'feet'];
+            
+            for (const zone of zones) {
+                await setLed(zone, 'red');
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            log('🚨 Danger simulation complete!');
+        }
+
+        async function simulateSafe() {
+            log('✅ Simulating safe scenario...');
+            
+            const zones = ['head', 'chest', 'belly', 'feet'];
+            
+            for (const zone of zones) {
+                await setLed(zone, 'green');
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+            
+            log('✅ Safe simulation complete!');
+        }
+
+        // Test connection on page load
+        window.onload = function() {
+            log('🔌 Testing connection to Flask server...');
+            getStatus();
+        };
+    </script>
+</body>
+</html>
