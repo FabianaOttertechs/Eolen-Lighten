@@ -50,6 +50,8 @@ constexpr auto qt_meta_stringdata_CLASSImpactVisualizerENDCLASS = QtMocHelpers::
     "chestLedColorChanged",
     "bellyLedColorChanged",
     "feetLedColorChanged",
+    "webSocketConnectedChanged",
+    "connected",
     "setHeadImpact",
     "setChestImpact",
     "setBellyImpact",
@@ -65,7 +67,16 @@ constexpr auto qt_meta_stringdata_CLASSImpactVisualizerENDCLASS = QtMocHelpers::
     "setLedColor",
     "zone",
     "resetAllLeds",
+    "isWebSocketConnected",
     "resetAllImpacts",
+    "onConnected",
+    "onDisconnected",
+    "onMessageReceived",
+    "message",
+    "onError",
+    "QAbstractSocket::SocketError",
+    "error",
+    "webSocketConnected",
     "headLedColor",
     "chestLedColor",
     "bellyLedColor",
@@ -82,39 +93,45 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      23,   14, // methods
-       8,  211, // properties
+      29,   14, // methods
+       9,  259, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       8,       // signalCount
+       9,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,  152,    2, 0x06,    9 /* Public */,
-       4,    1,  155,    2, 0x06,   11 /* Public */,
-       6,    1,  158,    2, 0x06,   13 /* Public */,
-       8,    1,  161,    2, 0x06,   15 /* Public */,
-      10,    1,  164,    2, 0x06,   17 /* Public */,
-      12,    1,  167,    2, 0x06,   19 /* Public */,
-      13,    1,  170,    2, 0x06,   21 /* Public */,
-      14,    1,  173,    2, 0x06,   23 /* Public */,
+       1,    1,  188,    2, 0x06,   10 /* Public */,
+       4,    1,  191,    2, 0x06,   12 /* Public */,
+       6,    1,  194,    2, 0x06,   14 /* Public */,
+       8,    1,  197,    2, 0x06,   16 /* Public */,
+      10,    1,  200,    2, 0x06,   18 /* Public */,
+      12,    1,  203,    2, 0x06,   20 /* Public */,
+      13,    1,  206,    2, 0x06,   22 /* Public */,
+      14,    1,  209,    2, 0x06,   24 /* Public */,
+      15,    1,  212,    2, 0x06,   26 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      15,    1,  176,    2, 0x0a,   25 /* Public */,
-      16,    1,  179,    2, 0x0a,   27 /* Public */,
-      17,    1,  182,    2, 0x0a,   29 /* Public */,
-      18,    1,  185,    2, 0x0a,   31 /* Public */,
-      19,    1,  188,    2, 0x0a,   33 /* Public */,
-      20,    1,  191,    2, 0x0a,   35 /* Public */,
-      21,    1,  194,    2, 0x0a,   37 /* Public */,
-      22,    1,  197,    2, 0x0a,   39 /* Public */,
-      23,    0,  200,    2, 0x0a,   41 /* Public */,
-      24,    0,  201,    2, 0x0a,   42 /* Public */,
-      25,    0,  202,    2, 0x0a,   43 /* Public */,
-      26,    0,  203,    2, 0x0a,   44 /* Public */,
-      27,    2,  204,    2, 0x0a,   45 /* Public */,
-      29,    0,  209,    2, 0x0a,   48 /* Public */,
-      30,    0,  210,    2, 0x0a,   49 /* Public */,
+      17,    1,  215,    2, 0x0a,   28 /* Public */,
+      18,    1,  218,    2, 0x0a,   30 /* Public */,
+      19,    1,  221,    2, 0x0a,   32 /* Public */,
+      20,    1,  224,    2, 0x0a,   34 /* Public */,
+      21,    1,  227,    2, 0x0a,   36 /* Public */,
+      22,    1,  230,    2, 0x0a,   38 /* Public */,
+      23,    1,  233,    2, 0x0a,   40 /* Public */,
+      24,    1,  236,    2, 0x0a,   42 /* Public */,
+      25,    0,  239,    2, 0x0a,   44 /* Public */,
+      26,    0,  240,    2, 0x0a,   45 /* Public */,
+      27,    0,  241,    2, 0x0a,   46 /* Public */,
+      28,    0,  242,    2, 0x0a,   47 /* Public */,
+      29,    2,  243,    2, 0x0a,   48 /* Public */,
+      31,    0,  248,    2, 0x0a,   51 /* Public */,
+      32,    0,  249,    2, 0x10a,   52 /* Public | MethodIsConst  */,
+      33,    0,  250,    2, 0x0a,   53 /* Public */,
+      34,    0,  251,    2, 0x08,   54 /* Private */,
+      35,    0,  252,    2, 0x08,   55 /* Private */,
+      36,    1,  253,    2, 0x08,   56 /* Private */,
+      38,    1,  256,    2, 0x08,   58 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -125,6 +142,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
     QMetaType::Void, QMetaType::QColor,   11,
     QMetaType::Void, QMetaType::QColor,   11,
     QMetaType::Void, QMetaType::QColor,   11,
+    QMetaType::Void, QMetaType::Bool,   16,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -139,19 +157,25 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   28,   11,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   30,   11,
+    QMetaType::Void,
+    QMetaType::Bool,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   37,
+    QMetaType::Void, 0x80000000 | 39,   40,
 
  // properties: name, type, flags
        3, QMetaType::Bool, 0x00015103, uint(0), 0,
        5, QMetaType::Bool, 0x00015103, uint(1), 0,
        7, QMetaType::Bool, 0x00015103, uint(2), 0,
        9, QMetaType::Bool, 0x00015103, uint(3), 0,
-      31, QMetaType::QColor, 0x00015103, uint(4), 0,
-      32, QMetaType::QColor, 0x00015103, uint(5), 0,
-      33, QMetaType::QColor, 0x00015103, uint(6), 0,
-      34, QMetaType::QColor, 0x00015103, uint(7), 0,
+      41, QMetaType::Bool, 0x00015001, uint(8), 0,
+      42, QMetaType::QColor, 0x00015103, uint(4), 0,
+      43, QMetaType::QColor, 0x00015103, uint(5), 0,
+      44, QMetaType::QColor, 0x00015103, uint(6), 0,
+      45, QMetaType::QColor, 0x00015103, uint(7), 0,
 
        0        // eod
 };
@@ -170,6 +194,8 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         // property 'bellyImpact'
         QtPrivate::TypeAndForceComplete<bool, std::true_type>,
         // property 'feetImpact'
+        QtPrivate::TypeAndForceComplete<bool, std::true_type>,
+        // property 'webSocketConnected'
         QtPrivate::TypeAndForceComplete<bool, std::true_type>,
         // property 'headLedColor'
         QtPrivate::TypeAndForceComplete<QColor, std::true_type>,
@@ -205,6 +231,9 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         // method 'feetLedColorChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QColor &, std::false_type>,
+        // method 'webSocketConnectedChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'setHeadImpact'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
@@ -243,8 +272,20 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'resetAllLeds'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'isWebSocketConnected'
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'resetAllImpacts'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onConnected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onDisconnected'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onMessageReceived'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
+        // method 'onError'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QAbstractSocket::SocketError, std::false_type>
     >,
     nullptr
 } };
@@ -263,22 +304,40 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 5: _t->chestLedColorChanged((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
         case 6: _t->bellyLedColorChanged((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
         case 7: _t->feetLedColorChanged((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 8: _t->setHeadImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 9: _t->setChestImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 10: _t->setBellyImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 11: _t->setFeetImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 12: _t->setHeadLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 13: _t->setChestLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 14: _t->setBellyLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 15: _t->setFeetLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 16: _t->triggerHeadImpact(); break;
-        case 17: _t->triggerChestImpact(); break;
-        case 18: _t->triggerBellyImpact(); break;
-        case 19: _t->triggerFeetImpact(); break;
-        case 20: _t->setLedColor((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 21: _t->resetAllLeds(); break;
-        case 22: _t->resetAllImpacts(); break;
+        case 8: _t->webSocketConnectedChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 9: _t->setHeadImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 10: _t->setChestImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 11: _t->setBellyImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 12: _t->setFeetImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 13: _t->setHeadLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 14: _t->setChestLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 15: _t->setBellyLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 16: _t->setFeetLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 17: _t->triggerHeadImpact(); break;
+        case 18: _t->triggerChestImpact(); break;
+        case 19: _t->triggerBellyImpact(); break;
+        case 20: _t->triggerFeetImpact(); break;
+        case 21: _t->setLedColor((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 22: _t->resetAllLeds(); break;
+        case 23: { bool _r = _t->isWebSocketConnected();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 24: _t->resetAllImpacts(); break;
+        case 25: _t->onConnected(); break;
+        case 26: _t->onDisconnected(); break;
+        case 27: _t->onMessageReceived((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 28: _t->onError((*reinterpret_cast< std::add_pointer_t<QAbstractSocket::SocketError>>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+        case 28:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QAbstractSocket::SocketError >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -338,6 +397,13 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
                 return;
             }
         }
+        {
+            using _t = void (ImpactVisualizer::*)(bool );
+            if (_t _q_method = &ImpactVisualizer::webSocketConnectedChanged; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 8;
+                return;
+            }
+        }
     } else if (_c == QMetaObject::ReadProperty) {
         auto *_t = static_cast<ImpactVisualizer *>(_o);
         (void)_t;
@@ -347,10 +413,11 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 1: *reinterpret_cast< bool*>(_v) = _t->chestImpact(); break;
         case 2: *reinterpret_cast< bool*>(_v) = _t->bellyImpact(); break;
         case 3: *reinterpret_cast< bool*>(_v) = _t->feetImpact(); break;
-        case 4: *reinterpret_cast< QColor*>(_v) = _t->headLedColor(); break;
-        case 5: *reinterpret_cast< QColor*>(_v) = _t->chestLedColor(); break;
-        case 6: *reinterpret_cast< QColor*>(_v) = _t->bellyLedColor(); break;
-        case 7: *reinterpret_cast< QColor*>(_v) = _t->feetLedColor(); break;
+        case 4: *reinterpret_cast< bool*>(_v) = _t->isWebSocketConnected(); break;
+        case 5: *reinterpret_cast< QColor*>(_v) = _t->headLedColor(); break;
+        case 6: *reinterpret_cast< QColor*>(_v) = _t->chestLedColor(); break;
+        case 7: *reinterpret_cast< QColor*>(_v) = _t->bellyLedColor(); break;
+        case 8: *reinterpret_cast< QColor*>(_v) = _t->feetLedColor(); break;
         default: break;
         }
     } else if (_c == QMetaObject::WriteProperty) {
@@ -362,10 +429,10 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 1: _t->setChestImpact(*reinterpret_cast< bool*>(_v)); break;
         case 2: _t->setBellyImpact(*reinterpret_cast< bool*>(_v)); break;
         case 3: _t->setFeetImpact(*reinterpret_cast< bool*>(_v)); break;
-        case 4: _t->setHeadLedColor(*reinterpret_cast< QColor*>(_v)); break;
-        case 5: _t->setChestLedColor(*reinterpret_cast< QColor*>(_v)); break;
-        case 6: _t->setBellyLedColor(*reinterpret_cast< QColor*>(_v)); break;
-        case 7: _t->setFeetLedColor(*reinterpret_cast< QColor*>(_v)); break;
+        case 5: _t->setHeadLedColor(*reinterpret_cast< QColor*>(_v)); break;
+        case 6: _t->setChestLedColor(*reinterpret_cast< QColor*>(_v)); break;
+        case 7: _t->setBellyLedColor(*reinterpret_cast< QColor*>(_v)); break;
+        case 8: _t->setFeetLedColor(*reinterpret_cast< QColor*>(_v)); break;
         default: break;
         }
     } else if (_c == QMetaObject::ResetProperty) {
@@ -392,18 +459,18 @@ int ImpactVisualizer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 23)
+        if (_id < 29)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 23;
+        _id -= 29;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 23)
-            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 23;
+        if (_id < 29)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 29;
     }else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty
             || _c == QMetaObject::RegisterPropertyMetaType) {
         qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }
@@ -462,5 +529,12 @@ void ImpactVisualizer::feetLedColorChanged(const QColor & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 7, _a);
+}
+
+// SIGNAL 8
+void ImpactVisualizer::webSocketConnectedChanged(bool _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 8, _a);
 }
 QT_WARNING_POP

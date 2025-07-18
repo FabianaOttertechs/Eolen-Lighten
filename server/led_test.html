@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED Control Test Page</title>
+    <title>ImpactVisualizer LED Control Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -29,6 +29,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             background-color: #fafafa;
+            position: relative;
         }
         .led-group h3 {
             margin: 0 0 10px 0;
@@ -38,6 +39,36 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
+        }
+        .led-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            display: inline-block;
+            margin-right: 15px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        .impact-status {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 10px;
+        }
+        .safe-status {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .danger-status {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .neutral-status {
+            background-color: #e2e3e5;
+            color: #383d41;
         }
         button {
             padding: 10px 20px;
@@ -69,6 +100,13 @@
         }
         .btn-white:hover {
             background-color: #f0f0f0;
+        }
+        .btn-yellow {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+        .btn-yellow:hover {
+            background-color: #fbc02d;
         }
         .control-group {
             margin-top: 30px;
@@ -106,6 +144,13 @@
         .btn-reset:hover {
             background-color: #1976D2;
         }
+        .btn-trigger {
+            background-color: #ff9800;
+            color: white;
+        }
+        .btn-trigger:hover {
+            background-color: #f57c00;
+        }
         .status-display {
             margin-top: 20px;
             padding: 15px;
@@ -122,6 +167,8 @@
             font-size: 12px;
             white-space: pre-wrap;
             color: #333;
+            max-height: 300px;
+            overflow-y: auto;
         }
         .connection-status {
             display: inline-block;
@@ -139,11 +186,28 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        .api-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        .api-info h4 {
+            margin: 0 0 10px 0;
+            color: #1976D2;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔌 LED Control Test Page</h1>
+        <h1>🔌 ImpactVisualizer LED Control Test</h1>
+        
+        <div class="api-info">
+            <h4>📡 API Integration Status</h4>
+            <div>Testing Flask API at: <strong>http://localhost:5000</strong></div>
+            <div>Compatible with: C++ ImpactVisualizer + QML UI</div>
+        </div>
         
         <div id="connection-status" class="connection-status disconnected">
             ❌ Disconnected
@@ -152,53 +216,70 @@
         <div class="led-group">
             <h3>👤 Head LED</h3>
             <div class="led-controls">
-                <button class="btn-red" onclick="setLed('head', 'red')">Red</button>
-                <button class="btn-green" onclick="setLed('head', 'green')">Green</button>
-                <button class="btn-white" onclick="setLed('head', 'white')">White</button>
+                <div class="led-indicator" id="head-indicator"></div>
+                <button class="btn-red" onclick="setLed('head', 'red')">🔴 Red (Danger)</button>
+                <button class="btn-green" onclick="setLed('head', 'green')">🟢 Green (Safe)</button>
+                <button class="btn-white" onclick="setLed('head', 'white')">⚪ White (Neutral)</button>
+                <button class="btn-yellow" onclick="setLed('head', 'yellow')">🟡 Yellow (Test)</button>
+                <button class="btn-trigger" onclick="triggerImpact('head')">⚡ Trigger Impact</button>
+                <span id="head-status" class="impact-status neutral-status">NEUTRAL</span>
             </div>
         </div>
 
         <div class="led-group">
             <h3>🫁 Chest LED</h3>
             <div class="led-controls">
-                <button class="btn-red" onclick="setLed('chest', 'red')">Red</button>
-                <button class="btn-green" onclick="setLed('chest', 'green')">Green</button>
-                <button class="btn-white" onclick="setLed('chest', 'white')">White</button>
+                <div class="led-indicator" id="chest-indicator"></div>
+                <button class="btn-red" onclick="setLed('chest', 'red')">🔴 Red (Danger)</button>
+                <button class="btn-green" onclick="setLed('chest', 'green')">🟢 Green (Safe)</button>
+                <button class="btn-white" onclick="setLed('chest', 'white')">⚪ White (Neutral)</button>
+                <button class="btn-yellow" onclick="setLed('chest', 'yellow')">🟡 Yellow (Test)</button>
+                <button class="btn-trigger" onclick="triggerImpact('chest')">⚡ Trigger Impact</button>
+                <span id="chest-status" class="impact-status neutral-status">NEUTRAL</span>
             </div>
         </div>
 
         <div class="led-group">
             <h3>🫃 Belly LED</h3>
             <div class="led-controls">
-                <button class="btn-red" onclick="setLed('belly', 'red')">Red</button>
-                <button class="btn-green" onclick="setLed('belly', 'green')">Green</button>
-                <button class="btn-white" onclick="setLed('belly', 'white')">White</button>
+                <div class="led-indicator" id="belly-indicator"></div>
+                <button class="btn-red" onclick="setLed('belly', 'red')">🔴 Red (Danger)</button>
+                <button class="btn-green" onclick="setLed('belly', 'green')">🟢 Green (Safe)</button>
+                <button class="btn-white" onclick="setLed('belly', 'white')">⚪ White (Neutral)</button>
+                <button class="btn-yellow" onclick="setLed('belly', 'yellow')">🟡 Yellow (Test)</button>
+                <button class="btn-trigger" onclick="triggerImpact('belly')">⚡ Trigger Impact</button>
+                <span id="belly-status" class="impact-status neutral-status">NEUTRAL</span>
             </div>
         </div>
 
         <div class="led-group">
             <h3>🦶 Feet LED</h3>
             <div class="led-controls">
-                <button class="btn-red" onclick="setLed('feet', 'red')">Red</button>
-                <button class="btn-green" onclick="setLed('feet', 'green')">Green</button>
-                <button class="btn-white" onclick="setLed('feet', 'white')">White</button>
+                <div class="led-indicator" id="feet-indicator"></div>
+                <button class="btn-red" onclick="setLed('feet', 'red')">🔴 Red (Danger)</button>
+                <button class="btn-green" onclick="setLed('feet', 'green')">🟢 Green (Safe)</button>
+                <button class="btn-white" onclick="setLed('feet', 'white')">⚪ White (Neutral)</button>
+                <button class="btn-yellow" onclick="setLed('feet', 'yellow')">🟡 Yellow (Test)</button>
+                <button class="btn-trigger" onclick="triggerImpact('feet')">⚡ Trigger Impact</button>
+                <span id="feet-status" class="impact-status neutral-status">NEUTRAL</span>
             </div>
         </div>
 
         <div class="control-group">
             <h3>🎮 Global Controls</h3>
             <div class="global-controls">
-                <button class="btn-demo" onclick="runDemo()">🎬 Run Demo</button>
-                <button class="btn-danger" onclick="simulateDanger()">🚨 Danger Mode</button>
-                <button class="btn-demo" onclick="simulateSafe()">✅ Safe Mode</button>
+                <button class="btn-demo" onclick="runSelfTest()">🎬 Self-Test Sequence</button>
+                <button class="btn-danger" onclick="simulateDanger()">🚨 All Danger</button>
+                <button class="btn-demo" onclick="simulateSafe()">✅ All Safe</button>
                 <button class="btn-reset" onclick="resetAll()">🔄 Reset All</button>
                 <button class="btn-reset" onclick="getStatus()">📊 Get Status</button>
+                <button class="btn-reset" onclick="checkHealth()">🏥 Health Check</button>
             </div>
         </div>
 
         <div class="status-display">
             <h4>📋 Response Log</h4>
-            <div id="response-log" class="status-content">Ready to send commands...</div>
+            <div id="response-log" class="status-content">Ready to test ImpactVisualizer API...</div>
         </div>
     </div>
 
@@ -206,6 +287,17 @@
         const BASE_URL = 'http://localhost:5000';
         const responseLog = document.getElementById('response-log');
         const connectionStatus = document.getElementById('connection-status');
+        
+        // Valid zones matching C++ and QML
+        const VALID_ZONES = ['head', 'chest', 'belly', 'feet'];
+        
+        // Color mappings matching C++ setLedColor method
+        const COLOR_MAPPINGS = {
+            'red': '#ff0000',
+            'green': '#32cd32',  // Lime green as per C++ code
+            'white': '#ffffff',
+            'yellow': '#ffff00'
+        };
 
         function log(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
@@ -223,9 +315,37 @@
             }
         }
 
+        function updateLedIndicator(zone, color, impact) {
+            const indicator = document.getElementById(`${zone}-indicator`);
+            const status = document.getElementById(`${zone}-status`);
+            
+            if (indicator) {
+                indicator.style.backgroundColor = COLOR_MAPPINGS[color] || color;
+            }
+            
+            if (status) {
+                if (impact === true) {
+                    status.textContent = 'DANGER';
+                    status.className = 'impact-status danger-status';
+                } else if (color === 'green') {
+                    status.textContent = 'SAFE';
+                    status.className = 'impact-status safe-status';
+                } else {
+                    status.textContent = 'NEUTRAL';
+                    status.className = 'impact-status neutral-status';
+                }
+            }
+        }
+
         async function setLed(zone, color) {
+            // Validate zone
+            if (!VALID_ZONES.includes(zone)) {
+                log(`❌ Invalid zone: ${zone}. Valid zones: ${VALID_ZONES.join(', ')}`, 'error');
+                return;
+            }
+            
             try {
-                log(`Setting ${zone} LED to ${color}...`);
+                log(`🔄 Setting ${zone} LED to ${color}...`);
                 
                 const response = await fetch(`${BASE_URL}/api/led`, {
                     method: 'POST',
@@ -240,10 +360,40 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    log(`✅ Success: ${JSON.stringify(data)}`, 'success');
+                    log(`✅ Success: ${zone} → ${color} (${data.status})`, 'success');
+                    
+                    // Update visual indicator
+                    updateLedIndicator(zone, data.color, data.impact);
+                    
+                    // Log detailed response
+                    log(`📊 Response: ${JSON.stringify(data, null, 2)}`);
                 } else {
-                    const error = await response.text();
-                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                    const errorData = await response.json();
+                    log(`❌ Error ${response.status}: ${errorData.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function triggerImpact(zone) {
+            try {
+                log(`⚡ Triggering impact for ${zone}...`);
+                
+                const response = await fetch(`${BASE_URL}/api/led/trigger/${zone}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Impact triggered: ${zone} (${data.status})`, 'success');
+                    updateLedIndicator(zone, data.color, data.impact);
+                } else {
+                    const errorData = await response.json();
+                    log(`❌ Error ${response.status}: ${errorData.error}`, 'error');
                 }
             } catch (error) {
                 log(`❌ Connection error: ${error.message}`, 'error');
@@ -252,22 +402,26 @@
 
         async function resetAll() {
             try {
-                log('Resetting all LEDs...');
+                log('🔄 Resetting all LEDs...');
                 
                 const response = await fetch(`${BASE_URL}/api/led/all`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({})
+                    }
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    log(`✅ All LEDs reset: ${JSON.stringify(data)}`, 'success');
+                    log(`✅ All LEDs reset: ${data.message}`, 'success');
+                    
+                    // Update all indicators
+                    VALID_ZONES.forEach(zone => {
+                        updateLedIndicator(zone, 'white', false);
+                    });
                 } else {
-                    const error = await response.text();
-                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                    const errorData = await response.json();
+                    log(`❌ Error ${response.status}: ${errorData.error}`, 'error');
                 }
             } catch (error) {
                 log(`❌ Connection error: ${error.message}`, 'error');
@@ -276,72 +430,103 @@
 
         async function getStatus() {
             try {
-                log('Getting LED status...');
+                log('📊 Getting LED status...');
                 
                 const response = await fetch(`${BASE_URL}/api/led/status`);
 
                 if (response.ok) {
                     const data = await response.json();
-                    log(`📊 Status: ${JSON.stringify(data, null, 2)}`, 'success');
+                    log(`📋 Current Status:\n${JSON.stringify(data, null, 2)}`, 'success');
+                    
+                    // Update all indicators based on current state
+                    if (data.led_states) {
+                        Object.keys(data.led_states).forEach(zone => {
+                            const state = data.led_states[zone];
+                            updateLedIndicator(zone, state.color, state.impact);
+                        });
+                    }
                 } else {
-                    const error = await response.text();
-                    log(`❌ Error ${response.status}: ${error}`, 'error');
+                    const errorData = await response.json();
+                    log(`❌ Error ${response.status}: ${errorData.error}`, 'error');
                 }
             } catch (error) {
                 log(`❌ Connection error: ${error.message}`, 'error');
             }
         }
 
-        async function runDemo() {
-            log('🎬 Starting demo sequence...');
+        async function checkHealth() {
+            try {
+                log('🏥 Checking API health...');
+                
+                const response = await fetch(`${BASE_URL}/api/health`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ API Health: ${data.status} (v${data.version})`, 'success');
+                } else {
+                    log(`❌ Health check failed: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Health check error: ${error.message}`, 'error');
+            }
+        }
+
+        async function runSelfTest() {
+            log('🎬 Starting self-test sequence (mimicking QML)...');
             
             const sequence = [
-                { zone: 'head', color: 'red' },
-                { zone: 'chest', color: 'green' },
-                { zone: 'belly', color: 'red' },
-                { zone: 'feet', color: 'green' }
+                { zone: 'head', color: 'yellow' },
+                { zone: 'head', color: 'white' },
+                { zone: 'chest', color: 'yellow' },
+                { zone: 'chest', color: 'white' },
+                { zone: 'belly', color: 'yellow' },
+                { zone: 'belly', color: 'white' },
+                { zone: 'feet', color: 'yellow' },
+                { zone: 'feet', color: 'white' }
             ];
 
             for (const step of sequence) {
                 await setLed(step.zone, step.color);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            await resetAll();
-            log('🎬 Demo sequence completed!');
+            log('🎬 Self-test sequence completed!');
         }
 
         async function simulateDanger() {
             log('🚨 Simulating danger scenario...');
             
-            const zones = ['head', 'chest', 'belly', 'feet'];
-            
-            for (const zone of zones) {
+            for (const zone of VALID_ZONES) {
                 await setLed(zone, 'red');
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
             
-            log('🚨 Danger simulation complete!');
+            log('🚨 All zones in danger state!');
         }
 
         async function simulateSafe() {
             log('✅ Simulating safe scenario...');
             
-            const zones = ['head', 'chest', 'belly', 'feet'];
-            
-            for (const zone of zones) {
+            for (const zone of VALID_ZONES) {
                 await setLed(zone, 'green');
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 200));
             }
             
-            log('✅ Safe simulation complete!');
+            log('✅ All zones in safe state!');
         }
 
-        // Test connection on page load
+        // Initialize on page load
         window.onload = function() {
-            log('🔌 Testing connection to Flask server...');
-            getStatus();
+            log('🔌 ImpactVisualizer Test Page Loaded');
+            log('📡 Testing connection to Flask API...');
+            
+            // Initialize all indicators to white
+            VALID_ZONES.forEach(zone => {
+                updateLedIndicator(zone, 'white', false);
+            });
+            
+            // Test connection
+            checkHealth();
         };
     </script>
 </body>

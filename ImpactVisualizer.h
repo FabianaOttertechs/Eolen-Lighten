@@ -63,6 +63,7 @@
 
 #include <QQuickItem>
 #include <QColor>
+#include <QtWebSockets/QWebSocket>
 
 class ImpactVisualizer : public QQuickItem
 {
@@ -73,6 +74,7 @@ class ImpactVisualizer : public QQuickItem
     Q_PROPERTY(bool chestImpact READ chestImpact WRITE setChestImpact NOTIFY chestImpactChanged)
     Q_PROPERTY(bool bellyImpact READ bellyImpact WRITE setBellyImpact NOTIFY bellyImpactChanged)
     Q_PROPERTY(bool feetImpact READ feetImpact WRITE setFeetImpact NOTIFY feetImpactChanged)
+    Q_PROPERTY(bool webSocketConnected READ isWebSocketConnected NOTIFY webSocketConnectedChanged)
 
     // LED Color properties (new)
     Q_PROPERTY(QColor headLedColor READ headLedColor WRITE setHeadLedColor NOTIFY headLedColorChanged)
@@ -117,8 +119,14 @@ public slots:
     // LED control methods (new)
     void setLedColor(const QString &zone, const QString &color);
     void resetAllLeds();
-
+    bool isWebSocketConnected() const;
     void resetAllImpacts();
+
+private slots:
+    void onConnected();
+    void onDisconnected();
+    void onMessageReceived(const QString &message);
+    void onError(QAbstractSocket::SocketError error);
 
 signals:
     // Impact signals (existing)
@@ -132,6 +140,7 @@ signals:
     void chestLedColorChanged(const QColor &color);
     void bellyLedColorChanged(const QColor &color);
     void feetLedColorChanged(const QColor &color);
+    void webSocketConnectedChanged(bool connected);
 
 private:
     // Impact members (existing)
@@ -145,6 +154,10 @@ private:
     QColor m_chestLedColor;
     QColor m_bellyLedColor;
     QColor m_feetLedColor;
+
+    QWebSocket *m_socket;
+    void connectWebSocket();
+    bool m_webSocketConnected;
 };
 
 #endif // IMPACTVISUALIZER_H

@@ -3,6 +3,7 @@
 #include <QDebug>  // For debugging
 #include "ImpactVisualizer.h"
 #include<QQmlContext>
+#include<QtWebSockets/QWebSocket>
 
 int main(int argc, char *argv[])
 {

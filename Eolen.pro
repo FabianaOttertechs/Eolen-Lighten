@@ -1,4 +1,6 @@
-QT += qml quick quickcontrols2 network
+QT += qml quick quickcontrols2 network websockets
+
+CONFIG += console
 
 SOURCES += \
         impactVisualizer.cpp \
