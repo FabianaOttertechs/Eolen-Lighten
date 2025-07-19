@@ -61,6 +61,8 @@
 #ifndef IMPACTVISUALIZER_H
 #define IMPACTVISUALIZER_H
 
+#include <QObject>
+#include <QTimer>
 #include <QQuickItem>
 #include <QColor>
 #include <QtWebSockets/QWebSocket>
@@ -84,6 +86,8 @@ class ImpactVisualizer : public QQuickItem
 
 public:
     explicit ImpactVisualizer(QQuickItem *parent = nullptr);
+    Q_INVOKABLE void startConnection();
+    QString connectionStatus() const;
 
     // Impact getters (existing)
     bool headImpact() const;
@@ -127,6 +131,7 @@ private slots:
     void onDisconnected();
     void onMessageReceived(const QString &message);
     void onError(QAbstractSocket::SocketError error);
+    void handleSocketStateChange(QAbstractSocket::SocketState state);
 
 signals:
     // Impact signals (existing)
@@ -141,6 +146,8 @@ signals:
     void bellyLedColorChanged(const QColor &color);
     void feetLedColorChanged(const QColor &color);
     void webSocketConnectedChanged(bool connected);
+    void connectionStatusChanged(QString status);
+    void handshakeCompleted(bool success);
 
 private:
     // Impact members (existing)
@@ -158,6 +165,9 @@ private:
     QWebSocket *m_socket;
     void connectWebSocket();
     bool m_webSocketConnected;
+    bool m_handshakeCompleted;
+    QTimer m_handshakeTimer;
+    void initializeConnection();
 };
 
 #endif // IMPACTVISUALIZER_H

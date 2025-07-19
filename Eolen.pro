@@ -2,6 +2,8 @@ QT += qml quick quickcontrols2 network websockets
 
 CONFIG += console
 
+DEFINES += REMOTE_MODE
+
 SOURCES += \
         impactVisualizer.cpp \
         main.cpp

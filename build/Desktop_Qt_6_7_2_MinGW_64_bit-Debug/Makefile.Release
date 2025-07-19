@@ -13,7 +13,7 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_QUICKCONTROLS2_LIB -DQT_QUICK_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_QMLMODELS_LIB -DQT_QML_LIB -DQT_QMLINTEGRATION_LIB -DQT_WEBSOCKETS_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DREMOTE_MODE -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_QUICKCONTROLS2_LIB -DQT_QUICK_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_QMLMODELS_LIB -DQT_QML_LIB -DQT_QMLINTEGRATION_LIB -DQT_WEBSOCKETS_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -fno-keep-inline-dllexport -O2 -Wall -Wextra -Wextra $(DEFINES)
 CXXFLAGS      = -fno-keep-inline-dllexport -O2 -Wall -Wextra -Wextra -fexceptions -mthreads $(DEFINES)
 INCPATH       = -I../../../Eolen -I. -IC:/Qt/6.7.2/mingw_64/include -IC:/Qt/6.7.2/mingw_64/include/QtQuickControls2 -IC:/Qt/6.7.2/mingw_64/include/QtQuick -IC:/Qt/6.7.2/mingw_64/include/QtOpenGL -IC:/Qt/6.7.2/mingw_64/include/QtGui -IC:/Qt/6.7.2/mingw_64/include/QtQmlModels -IC:/Qt/6.7.2/mingw_64/include/QtQml -IC:/Qt/6.7.2/mingw_64/include/QtQmlIntegration -IC:/Qt/6.7.2/mingw_64/include/QtWebSockets -IC:/Qt/6.7.2/mingw_64/include/QtNetwork -IC:/Qt/6.7.2/mingw_64/include/QtCore -Irelease -I/include -IC:/Qt/6.7.2/mingw_64/mkspecs/win32-g++ 
@@ -119,10 +119,10 @@ compiler_moc_header_make_all: release/moc_ImpactVisualizer.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) release\moc_ImpactVisualizer.cpp
 release/moc_ImpactVisualizer.cpp: ../../ImpactVisualizer.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/QQuickItem \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qquickitem.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qnamespace.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qglobal.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtversionchecks.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtconfiginclude.h \
@@ -167,27 +167,14 @@ release/moc_ImpactVisualizer.cpp: ../../ImpactVisualizer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtresource.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qttranslation.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qversiontagging.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqml-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtgui-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquick-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qqml.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlprivate.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsprimitivevalue.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsnumbercoercion.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qtmetamacros.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qfunctionaltools_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstring.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qchar.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringview.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearray.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qrefcount.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qnamespace.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qtmetamacros.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qarraydata.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qpair.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qarraydatapointer.h \
@@ -209,46 +196,63 @@ release/moc_ImpactVisualizer.cpp: ../../ImpactVisualizer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringbuilder.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringconverter.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringconverter_base.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qvariant.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qlist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qhashfunctions.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterator.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearraylist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qalgorithms.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringmatcher.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qcoreevent.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmetatype.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcompare.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcomparehelpers.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qdatastream.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qiodevicebase.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qfloat16.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qhashfunctions.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmath.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qalgorithms.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterable.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmetacontainer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcontainerinfo.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtaggedpointer.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qfunctionaltools_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopeguard.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject_impl.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbindingstorage.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QTimer \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qtimer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbasictimer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/QQuickItem \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qquickitem.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqml-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtgui-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquick-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qqml.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlprivate.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsprimitivevalue.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsnumbercoercion.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qvariant.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qdebug.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtextstream.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcontiguouscache.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qsharedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qshareddata.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qsharedpointer_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qlist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterator.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearraylist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringmatcher.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmap.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qshareddata_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qset.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qhash.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qvarlengtharray.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/q23utility.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qcoreevent.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qbindingstorage.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsvalue.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmllist.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlparserstatus.h \
@@ -265,7 +269,6 @@ release/moc_ImpactVisualizer.cpp: ../../ImpactVisualizer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQmlIntegration/qqmlintegration.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlcomponent.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlerror.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QList \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qproperty.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qpropertyprivate.h \
@@ -368,10 +371,10 @@ compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_heade
 ####### Compile
 
 release/impactVisualizer.o: ../../impactVisualizer.cpp ../../ImpactVisualizer.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/QQuickItem \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qquickitem.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qnamespace.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qglobal.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtversionchecks.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtconfiginclude.h \
@@ -416,27 +419,14 @@ release/impactVisualizer.o: ../../impactVisualizer.cpp ../../ImpactVisualizer.h 
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtresource.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qttranslation.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qversiontagging.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqml-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiglobal.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtgui-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquick-config.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickexports.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qqml.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlprivate.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsprimitivevalue.h \
-		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsnumbercoercion.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qtmetamacros.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qfunctionaltools_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstring.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qchar.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringview.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearray.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qrefcount.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qnamespace.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qtmetamacros.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qarraydata.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qpair.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qarraydatapointer.h \
@@ -458,46 +448,63 @@ release/impactVisualizer.o: ../../impactVisualizer.cpp ../../ImpactVisualizer.h 
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringbuilder.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringconverter.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringconverter_base.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qvariant.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qlist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qhashfunctions.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterator.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearraylist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlist.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qalgorithms.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringmatcher.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qcoreevent.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmetatype.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcompare.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcomparehelpers.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qdatastream.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qiodevicebase.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qfloat16.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qhashfunctions.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmath.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qalgorithms.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterable.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmetacontainer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcontainerinfo.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtaggedpointer.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qfunctionaltools_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qscopeguard.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject_impl.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbindingstorage.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QTimer \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qtimer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbasictimer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/QQuickItem \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qquickitem.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqml-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetwork-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtNetwork/qtnetworkexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qtqmlexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiglobal.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtgui-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtGui/qtguiexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquick-config.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickexports.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qqml.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlprivate.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsprimitivevalue.h \
+		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsnumbercoercion.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qvariant.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qdebug.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qtextstream.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qcontiguouscache.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qsharedpointer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qshareddata.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qsharedpointer_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qlist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qiterator.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qbytearraylist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringlist.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qstringmatcher.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qmap.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qshareddata_impl.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qset.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qhash.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qvarlengtharray.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/q23utility.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qcoreevent.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qobject_impl.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qbindingstorage.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qjsvalue.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmllist.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlparserstatus.h \
@@ -514,7 +521,6 @@ release/impactVisualizer.o: ../../impactVisualizer.cpp ../../ImpactVisualizer.h 
 		C:/Qt/6.7.2/mingw_64/include/QtQmlIntegration/qqmlintegration.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlcomponent.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlerror.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QList \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qproperty.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qpropertyprivate.h \
@@ -607,10 +613,7 @@ release/impactVisualizer.o: ../../impactVisualizer.cpp ../../ImpactVisualizer.h 
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QJsonObject \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qjsonobject.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QJsonArray \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qjsonarray.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/QTimer \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qtimer.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/qbasictimer.h
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qjsonarray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\impactVisualizer.o ..\..\impactVisualizer.cpp
 
 release/main.o: ../../main.cpp C:/Qt/6.7.2/mingw_64/include/QtGui/QGuiApplication \
@@ -789,13 +792,16 @@ release/main.o: ../../main.cpp C:/Qt/6.7.2/mingw_64/include/QtGui/QGuiApplicatio
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlabstracturlinterceptor.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QDebug \
 		../../ImpactVisualizer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/QTimer \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qtimer.h \
+		C:/Qt/6.7.2/mingw_64/include/QtCore/qbasictimer.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQuick/QQuickItem \
 		C:/Qt/6.7.2/mingw_64/include/QtQuick/qquickitem.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickglobal.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquick-config.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQuick/qtquickexports.h \
 		C:/Qt/6.7.2/mingw_64/include/QtQml/qqmlcomponent.h \
-		C:/Qt/6.7.2/mingw_64/include/QtCore/QObject \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/QList \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qproperty.h \
 		C:/Qt/6.7.2/mingw_64/include/QtCore/qpropertyprivate.h \

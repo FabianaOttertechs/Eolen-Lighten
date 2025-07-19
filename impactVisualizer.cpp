@@ -134,16 +134,19 @@ ImpactVisualizer::ImpactVisualizer(QQuickItem *parent)
     m_chestLedColor(Qt::white),
     m_bellyLedColor(Qt::white),
     m_feetLedColor(Qt::white),
-    m_socket(new QWebSocket())
+    m_socket(new QWebSocket()),
+    m_handshakeCompleted(false)
 
 {
     connect(m_socket, &QWebSocket::connected, this, &ImpactVisualizer::onConnected);
+    connect(m_socket, &QWebSocket::disconnected, this, &ImpactVisualizer::onDisconnected);
     connect(m_socket, &QWebSocket::textMessageReceived,
             this, &ImpactVisualizer::onMessageReceived);
     connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
             this, &ImpactVisualizer::onError);
-
-    connectWebSocket();
+    connect(m_socket, &QWebSocket::stateChanged,
+            this, &ImpactVisualizer::handleSocketStateChange);
+    //connectWebSocket();
 }
 
 // Getters mantidos como estão
@@ -281,10 +284,43 @@ void ImpactVisualizer::triggerFeetImpact() {
     setFeetImpact(true);
     setFeetLedColor(Qt::red);
 }
+
+void ImpactVisualizer::initializeConnection()
+{
+    if(m_socket->state() == QAbstractSocket::UnconnectedState) {
+        connectWebSocket();
+    }
+}
+
+void ImpactVisualizer::startConnection()
+{
+    qDebug() << "Iniciando conexão solicitada pelo QML";
+    initializeConnection();
+}
+
 void ImpactVisualizer::connectWebSocket()
 {
-    //m_socket->open(QUrl("ws://localhost:5000/socket.io/?EIO=4&transport=websocket")); //seridor local
-    m_socket->open(QUrl("wss://7248700b1416.ngrok-free.app/socket.io/?EIO=4&transport=websocket")); //acesso externo
+    // Fechar conexão existente
+    if (m_socket->state() == QAbstractSocket::ConnectedState ||
+        m_socket->state() == QAbstractSocket::ConnectingState) {
+        qDebug() << "Já está conectado ou tentando conectar.";
+        return;
+    }
+
+    QString serverUrl;
+    //static bool tryWss = true; // Variável estática para alternar entre WSS/WS
+
+    // if (tryWss) {
+    //     serverUrl = "wss://211b584c6427.ngrok-free.app/socket.io/?EIO=4&transport=websocket";
+    //     qDebug() << "Tentando conexão segura (WSS)...";
+    // } else {
+    //     serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";
+    // }
+    serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";//"wss://7248700b1416.ngrok-free.app/socket.io/?EIO=4&transport=websocket";
+    qDebug() << "Connecting to WebSocket:" << serverUrl;
+
+    m_handshakeCompleted = false;
+    m_socket->open(QUrl(serverUrl));
 }
 
 bool ImpactVisualizer::isWebSocketConnected() const
@@ -298,33 +334,64 @@ void ImpactVisualizer::onConnected()
     m_webSocketConnected = true;
     emit webSocketConnectedChanged(true);
 
-    // Send Socket.IO handshake sequence
+    // Socket.IO handshake sequence
     m_socket->sendTextMessage("2probe");
-    m_socket->sendTextMessage("5"); // Binary support
+    m_socket->sendTextMessage("5");
+
+    // Configure handshake timeout (5 seconds)
+    m_handshakeTimer.start(5000);
 }
 
 void ImpactVisualizer::onDisconnected()
 {
+    if (m_socket->isValid()) {
+        m_socket->close();
+    }
     qDebug() << "WebSocket disconnected!";
     m_webSocketConnected = false;
+    m_handshakeCompleted = false;
     emit webSocketConnectedChanged(false);
-
-    // Attempt reconnect after delay
-    QTimer::singleShot(3000, this, &ImpactVisualizer::connectWebSocket);
 }
 
 void ImpactVisualizer::onError(QAbstractSocket::SocketError error)
 {
-    qWarning() << "WebSocket error:" << error << m_socket->errorString();
-    onDisconnected();
+    QString errorMsg;
+    switch(error) {
+    case QAbstractSocket::ConnectionRefusedError:
+        errorMsg = "Servidor recusou a conexão (pode estar offline)";
+        break;
+    case QAbstractSocket::RemoteHostClosedError:
+        errorMsg = "Servidor fechou a conexão";
+        break;
+    case QAbstractSocket::HostNotFoundError:
+        errorMsg = "Servidor não encontrado";
+        break;
+    case QAbstractSocket::SocketTimeoutError:
+        errorMsg = "Timeout de conexão";
+        break;
+    default:
+        errorMsg = m_socket->errorString();
+    }
+
+    qDebug() << "WebSocket Error:" << errorMsg;
 }
 
 void ImpactVisualizer::onMessageReceived(const QString &message)
 {
     qDebug() << "Message received:" << message;
 
-    if (message == "2") {  // Ping recebido
-        m_socket->sendTextMessage("3");  // Responde com pong
+    // Handle handshake response
+    if (message == "3probe") {
+        m_handshakeCompleted = true;
+        m_handshakeTimer.stop();
+        m_socket->sendTextMessage("40"); // Connect to default namespace
+        qDebug() << "Handshake completed successfully";
+        return;
+    }
+
+    // Handle ping-pong
+    if (message == "2") {
+        m_socket->sendTextMessage("3");
         return;
     }
     // Socket.IO protocol messages start with numbers
@@ -353,6 +420,7 @@ void ImpactVisualizer::onMessageReceived(const QString &message)
             QString zone = data["zone"].toString();
             bool impact = data["impact"].toBool();
 
+
             // Call the specific impact method based on zone
             if (zone == "head") {
                 setHeadImpact(impact);
@@ -367,7 +435,35 @@ void ImpactVisualizer::onMessageReceived(const QString &message)
                 setFeetImpact(impact);
             }
         }
+        else if (event == "state_update") {
+            // Atualiza todos os LEDs de uma vez
+            QJsonObject leds = data["leds"].toObject();
+            for (const QString& zone : leds.keys()) {
+                setLedColor(zone, leds[zone].toString());
+            }
+
+            // Se precisar resetar tudo, chame a função existente
+            if (leds["head"] == "white" &&
+                leds["chest"] == "white" &&
+                leds["belly"] == "white" &&
+                leds["feet"] == "white") {
+                resetAllLeds(); // Reutiliza sua função existente
+            }
+        }
+
     }
 }
 
-
+void ImpactVisualizer::handleSocketStateChange(QAbstractSocket::SocketState state)
+{
+    QString status;
+    switch(state) {
+    case QAbstractSocket::UnconnectedState: status = "Disconnected"; break;
+    case QAbstractSocket::ConnectingState: status = "Connecting"; break;
+    case QAbstractSocket::ConnectedState:
+        status = m_handshakeCompleted ? "Connected" : "Handshaking";
+        break;
+    default: status = "Unknown";
+    }
+    emit connectionStatusChanged(status);
+}

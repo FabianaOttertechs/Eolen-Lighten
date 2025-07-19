@@ -313,11 +313,10 @@ Window {
     height: 1200
     visible: true
     property bool isConnected: false
-    property bool selfTestRunning: true
 
     function sendLedCommand(zone, color) {
         var xhr = new XMLHttpRequest();
-        var url = "https://7248700b1416.ngrok-free.app/api/led";//"http://localhost:5000/api/led";
+        var url = "http://localhost:5000/api/led"//"https://211b584c6427.ngrok-free.app/api/led";//"http://localhost:5000/api/led";
         var data = JSON.stringify({
             led: zone,
             color: color
@@ -335,6 +334,7 @@ Window {
                     // Update both color and impact state via C++ method
                     //impactVisualizer.setLedColor(zone, color);
                 } else {
+                    impactVisualizer.setLedColor(zone, color);
                     console.error("API Error:", xhr.status, xhr.responseText);
                 }
             }
@@ -344,18 +344,33 @@ Window {
 
     function resetAllLeds() {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://7248700b1416.ngrok-free.app/api/led/all");//"http://localhost:5000/api/led/all");
-        xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.open("POST", "http://localhost:5000/api/led/all");
+                xhr.setRequestHeader("Content-Type", "application/json");
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                impactVisualizer.resetAllLeds();
-                impactVisualizer.resetAllImpacts();
-            }
-        };
-        xhr.send();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            console.log("Reset successful");
+                        } else {
+                            console.error("Reset failed:", xhr.status);
+                            // Fallback to local reset if API fails
+                            impactVisualizer.resetAllLeds();
+                            impactVisualizer.resetAllImpacts();
+                        }
+                    }
+                };
+                xhr.send();
     }
 
+    function safeSendCommand(zone, color) {
+        if (impactVisualizer.websocketConnected) {
+            sendLedCommand(zone, color);
+        } else {
+            // Atualiza localmente quando offline
+            impactVisualizer.setLedColor(zone, color);
+            console.log("Modo offline: LED", zone, "definido para", color);
+        }
+    }
     ImpactVisualizer {
         id: impactVisualizer
         anchors.fill: parent
@@ -367,7 +382,10 @@ Window {
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
         }
-
+        Component.onCompleted: {
+            resetAllLeds() // Garante que todos começam no estado padrão
+            startConnection()
+        }
         // LED indicators - properly bound to C++ properties
         Item {
             // Head LED
@@ -375,7 +393,7 @@ Window {
                 id: headLed
                 width: 50; height: 50
                 radius: width/2
-                color: mainWindow.selfTestRunning ? "white" : impactVisualizer.headLedColor
+                color: impactVisualizer.headLedColor
                 border.color: "black"
                 border.width: 2
                 x: 425
@@ -387,7 +405,7 @@ Window {
                 id: chestLed
                 width: 50; height: 50
                 radius: width/2
-                color: mainWindow.selfTestRunning ? "white" : impactVisualizer.chestLedColor
+                color: impactVisualizer.chestLedColor
                 border.color: "black"
                 border.width: 2
                 x: 425
@@ -399,7 +417,7 @@ Window {
                 id: bellyLed
                 width: 50; height: 50
                 radius: width/2
-                color: mainWindow.selfTestRunning ? "white" : impactVisualizer.bellyLedColor
+                color: impactVisualizer.bellyLedColor
                 border.color: "black"
                 border.width: 2
                 x: 425
@@ -411,57 +429,12 @@ Window {
                 id: feetLed
                 width: 50; height: 50
                 radius: width/2
-                color: mainWindow.selfTestRunning ? "white" : impactVisualizer.feetLedColor
+                color: impactVisualizer.feetLedColor
                 border.color: "black"
                 border.width: 2
                 x: 425
                 y: 900
             }
-        }
-
-        SequentialAnimation {
-            running: true
-            onStarted: console.log("Starting LED self-test...")
-            onStopped: {
-                mainWindow.selfTestRunning = false
-                console.log("LED self-test completed")
-                resetAllLeds()
-            }
-            // Test Head LED
-            ScriptAction {
-                    script: sendLedCommand("head", "yellow")
-                }
-                PauseAnimation { duration: 500 }
-                ScriptAction {
-                    script: sendLedCommand("head", "white")
-                }
-
-            // Test Chest LED
-                ScriptAction {
-                        script: sendLedCommand("chest", "yellow")
-                    }
-                    PauseAnimation { duration: 500 }
-                    ScriptAction {
-                        script: sendLedCommand("chest", "white")
-                    }
-
-            // Test Belly LED
-                    ScriptAction {
-                            script: sendLedCommand("belly", "yellow")
-                        }
-                        PauseAnimation { duration: 500 }
-                        ScriptAction {
-                            script: sendLedCommand("belly", "white")
-                        }
-
-            // Test Feet LED
-                        ScriptAction {
-                                script: sendLedCommand("feet", "yellow")
-                            }
-                            PauseAnimation { duration: 500 }
-                            ScriptAction {
-                                script: sendLedCommand("feet", "white")
-                            }
         }
 
         // Debug controls
@@ -470,7 +443,7 @@ Window {
             anchors.top: parent.top
             spacing: 10
             padding: 20
-            visible: !selfTestRunning
+            //visible: !selfTestRunning
 
             // Head LED controls
             Row {
@@ -498,14 +471,16 @@ Window {
                     text: "Chest Green"
                     onClicked: {
                         console.log("🟢 Chest Green button pressed");
-                        sendLedCommand("chest", "green");
+                        //sendLedCommand("chest", "green");
+                        safeSendCommand("chest", "green");
                     }
                 }
                 Button {
                     text: "Chest Red"
                     onClicked: {
                         console.log("🔴 Chest Red button pressed");
-                        sendLedCommand("chest", "red");
+                        //sendLedCommand("chest", "red");
+                        safeSendCommand("chest", "red");
                     }
                 }
             }
@@ -564,12 +539,13 @@ Window {
             anchors.top: parent.top
             spacing: 5
             padding: 20
-            visible: !selfTestRunning
+            //visible: !selfTestRunning
 
             Text {
-                text: "WebSocket: " + (impactVisualizer.websocketConnected ? "✔ Connected" : "✖ Disconnected")
-                color: impactVisualizer.websocketConnected ? "green" : "red"
-                font.bold: true
+                Text {
+                    text: "Estado: " + impactVisualizer.connectionStatus()
+                    color: impactVisualizer.webSocketConnected ? "green" : "red"
+                }
 
             }
             Text {

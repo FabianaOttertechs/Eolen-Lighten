@@ -16,10 +16,12 @@ CORS(app)
 #                   logger=True,            # Enable logging
 #                   engineio_logger=True)   # Enable engineio logging
 socketio = SocketIO(app, 
-                   ping_timeout=30,
-                   ping_interval=25,
+                   ping_timeout=60,
+                   ping_interval=40,
                    cors_allowed_origins="*",
-                    async_mode='threading') #add para compatibilidade com ngrok
+                    async_mode='threading',
+                    logger = True,
+                    engineio_logger=True) #add para compatibilidade com ngrok
 
 # Add connection tracking
 connected_clients = set()
@@ -107,33 +109,35 @@ def set_led():
         "timestamp": last_update
     })
 
-#@app.route('/api/led/all', methods=['POST'])
-#def reset_all_leds():
-#    """Reset all LEDs to white"""
-#    global last_update
+@app.route('/api/led/all', methods=['POST'])
+def reset_all_leds():
+    """Reset all LEDs to white"""
+    global last_update
     
-#    for zone in led_states:
-#        led_states[zone] = "white"
+    for zone in led_states:
+        led_states[zone] = "white"
     
-#    for zone in impact_states:
-#        impact_states[zone] = False
+    for zone in impact_states:
+        impact_states[zone] = False
     
-#    last_update = time.time()
+    last_update = time.time()
     
-#    print("All LEDs reset to white")
-#    socketio.emit('state_update', {
-#    "leds": led_states,
-#    "impacts": impact_states,
-#    "timestamp": time.time()
-#})
+    print("All LEDs reset to white")
+    # Emit both updates to ensure all clients sync
+    socketio.emit('state_update', {
+        "leds": led_states,
+        "impacts": impact_states,
+        "timestamp": time.time()
+    })
+    socketio.emit('led_update', {'led': 'all', 'color': 'white'}, broadcast=True)
 
-#    return jsonify({
-#        "success": True,
-#        "message": "All LEDs reset",
-#        "leds": led_states,
-#        "impacts": impact_states,
-#        "timestamp": last_update
-#    })
+    return jsonify({
+        "success": True,
+        "message": "All LEDs reset",
+        "leds": led_states,
+        "impacts": impact_states,
+        "timestamp": last_update
+    })
 
 @app.route('/api/impact', methods=['POST'])
 def set_impact():
@@ -223,6 +227,13 @@ def clear_impact():
     last_update = time.time()
     
     print(f"Cleared impact for {zone if zone else 'all zones'}")
+    
+    # Emit updates
+    socketio.emit('state_update', {
+        "leds": led_states,
+        "impacts": impact_states,
+        "timestamp": time.time()
+    })
     
     return jsonify({
         "success": True,

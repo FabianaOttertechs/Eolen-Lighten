@@ -52,6 +52,10 @@ constexpr auto qt_meta_stringdata_CLASSImpactVisualizerENDCLASS = QtMocHelpers::
     "feetLedColorChanged",
     "webSocketConnectedChanged",
     "connected",
+    "connectionStatusChanged",
+    "status",
+    "handshakeCompleted",
+    "success",
     "setHeadImpact",
     "setChestImpact",
     "setBellyImpact",
@@ -76,6 +80,10 @@ constexpr auto qt_meta_stringdata_CLASSImpactVisualizerENDCLASS = QtMocHelpers::
     "onError",
     "QAbstractSocket::SocketError",
     "error",
+    "handleSocketStateChange",
+    "QAbstractSocket::SocketState",
+    "state",
+    "startConnection",
     "webSocketConnected",
     "headLedColor",
     "chestLedColor",
@@ -93,45 +101,51 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      29,   14, // methods
-       9,  259, // properties
+      33,   14, // methods
+       9,  293, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       9,       // signalCount
+      11,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,  188,    2, 0x06,   10 /* Public */,
-       4,    1,  191,    2, 0x06,   12 /* Public */,
-       6,    1,  194,    2, 0x06,   14 /* Public */,
-       8,    1,  197,    2, 0x06,   16 /* Public */,
-      10,    1,  200,    2, 0x06,   18 /* Public */,
-      12,    1,  203,    2, 0x06,   20 /* Public */,
-      13,    1,  206,    2, 0x06,   22 /* Public */,
-      14,    1,  209,    2, 0x06,   24 /* Public */,
-      15,    1,  212,    2, 0x06,   26 /* Public */,
+       1,    1,  212,    2, 0x06,   10 /* Public */,
+       4,    1,  215,    2, 0x06,   12 /* Public */,
+       6,    1,  218,    2, 0x06,   14 /* Public */,
+       8,    1,  221,    2, 0x06,   16 /* Public */,
+      10,    1,  224,    2, 0x06,   18 /* Public */,
+      12,    1,  227,    2, 0x06,   20 /* Public */,
+      13,    1,  230,    2, 0x06,   22 /* Public */,
+      14,    1,  233,    2, 0x06,   24 /* Public */,
+      15,    1,  236,    2, 0x06,   26 /* Public */,
+      17,    1,  239,    2, 0x06,   28 /* Public */,
+      19,    1,  242,    2, 0x06,   30 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-      17,    1,  215,    2, 0x0a,   28 /* Public */,
-      18,    1,  218,    2, 0x0a,   30 /* Public */,
-      19,    1,  221,    2, 0x0a,   32 /* Public */,
-      20,    1,  224,    2, 0x0a,   34 /* Public */,
-      21,    1,  227,    2, 0x0a,   36 /* Public */,
-      22,    1,  230,    2, 0x0a,   38 /* Public */,
-      23,    1,  233,    2, 0x0a,   40 /* Public */,
-      24,    1,  236,    2, 0x0a,   42 /* Public */,
-      25,    0,  239,    2, 0x0a,   44 /* Public */,
-      26,    0,  240,    2, 0x0a,   45 /* Public */,
-      27,    0,  241,    2, 0x0a,   46 /* Public */,
-      28,    0,  242,    2, 0x0a,   47 /* Public */,
-      29,    2,  243,    2, 0x0a,   48 /* Public */,
-      31,    0,  248,    2, 0x0a,   51 /* Public */,
-      32,    0,  249,    2, 0x10a,   52 /* Public | MethodIsConst  */,
-      33,    0,  250,    2, 0x0a,   53 /* Public */,
-      34,    0,  251,    2, 0x08,   54 /* Private */,
-      35,    0,  252,    2, 0x08,   55 /* Private */,
-      36,    1,  253,    2, 0x08,   56 /* Private */,
-      38,    1,  256,    2, 0x08,   58 /* Private */,
+      21,    1,  245,    2, 0x0a,   32 /* Public */,
+      22,    1,  248,    2, 0x0a,   34 /* Public */,
+      23,    1,  251,    2, 0x0a,   36 /* Public */,
+      24,    1,  254,    2, 0x0a,   38 /* Public */,
+      25,    1,  257,    2, 0x0a,   40 /* Public */,
+      26,    1,  260,    2, 0x0a,   42 /* Public */,
+      27,    1,  263,    2, 0x0a,   44 /* Public */,
+      28,    1,  266,    2, 0x0a,   46 /* Public */,
+      29,    0,  269,    2, 0x0a,   48 /* Public */,
+      30,    0,  270,    2, 0x0a,   49 /* Public */,
+      31,    0,  271,    2, 0x0a,   50 /* Public */,
+      32,    0,  272,    2, 0x0a,   51 /* Public */,
+      33,    2,  273,    2, 0x0a,   52 /* Public */,
+      35,    0,  278,    2, 0x0a,   55 /* Public */,
+      36,    0,  279,    2, 0x10a,   56 /* Public | MethodIsConst  */,
+      37,    0,  280,    2, 0x0a,   57 /* Public */,
+      38,    0,  281,    2, 0x08,   58 /* Private */,
+      39,    0,  282,    2, 0x08,   59 /* Private */,
+      40,    1,  283,    2, 0x08,   60 /* Private */,
+      42,    1,  286,    2, 0x08,   62 /* Private */,
+      45,    1,  289,    2, 0x08,   64 /* Private */,
+
+ // methods: name, argc, parameters, tag, flags, initial metatype offsets
+      48,    0,  292,    2, 0x02,   66 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -143,6 +157,8 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
     QMetaType::Void, QMetaType::QColor,   11,
     QMetaType::Void, QMetaType::QColor,   11,
     QMetaType::Void, QMetaType::Bool,   16,
+    QMetaType::Void, QMetaType::QString,   18,
+    QMetaType::Void, QMetaType::Bool,   20,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -157,25 +173,29 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSImpactVisualizerENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,   30,   11,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   34,   11,
     QMetaType::Void,
     QMetaType::Bool,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   37,
-    QMetaType::Void, 0x80000000 | 39,   40,
+    QMetaType::Void, QMetaType::QString,   41,
+    QMetaType::Void, 0x80000000 | 43,   44,
+    QMetaType::Void, 0x80000000 | 46,   47,
+
+ // methods: parameters
+    QMetaType::Void,
 
  // properties: name, type, flags
        3, QMetaType::Bool, 0x00015103, uint(0), 0,
        5, QMetaType::Bool, 0x00015103, uint(1), 0,
        7, QMetaType::Bool, 0x00015103, uint(2), 0,
        9, QMetaType::Bool, 0x00015103, uint(3), 0,
-      41, QMetaType::Bool, 0x00015001, uint(8), 0,
-      42, QMetaType::QColor, 0x00015103, uint(4), 0,
-      43, QMetaType::QColor, 0x00015103, uint(5), 0,
-      44, QMetaType::QColor, 0x00015103, uint(6), 0,
-      45, QMetaType::QColor, 0x00015103, uint(7), 0,
+      49, QMetaType::Bool, 0x00015001, uint(8), 0,
+      50, QMetaType::QColor, 0x00015103, uint(4), 0,
+      51, QMetaType::QColor, 0x00015103, uint(5), 0,
+      52, QMetaType::QColor, 0x00015103, uint(6), 0,
+      53, QMetaType::QColor, 0x00015103, uint(7), 0,
 
        0        // eod
 };
@@ -234,6 +254,12 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         // method 'webSocketConnectedChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'connectionStatusChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QString, std::false_type>,
+        // method 'handshakeCompleted'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'setHeadImpact'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
@@ -285,7 +311,12 @@ Q_CONSTINIT const QMetaObject ImpactVisualizer::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'onError'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QAbstractSocket::SocketError, std::false_type>
+        QtPrivate::TypeAndForceComplete<QAbstractSocket::SocketError, std::false_type>,
+        // method 'handleSocketStateChange'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QAbstractSocket::SocketState, std::false_type>,
+        // method 'startConnection'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
 } };
@@ -305,37 +336,48 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 6: _t->bellyLedColorChanged((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
         case 7: _t->feetLedColorChanged((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
         case 8: _t->webSocketConnectedChanged((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 9: _t->setHeadImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 10: _t->setChestImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 11: _t->setBellyImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 12: _t->setFeetImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
-        case 13: _t->setHeadLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 14: _t->setChestLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 15: _t->setBellyLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 16: _t->setFeetLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
-        case 17: _t->triggerHeadImpact(); break;
-        case 18: _t->triggerChestImpact(); break;
-        case 19: _t->triggerBellyImpact(); break;
-        case 20: _t->triggerFeetImpact(); break;
-        case 21: _t->setLedColor((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 22: _t->resetAllLeds(); break;
-        case 23: { bool _r = _t->isWebSocketConnected();
+        case 9: _t->connectionStatusChanged((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 10: _t->handshakeCompleted((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 11: _t->setHeadImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 12: _t->setChestImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 13: _t->setBellyImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 14: _t->setFeetImpact((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 15: _t->setHeadLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 16: _t->setChestLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 17: _t->setBellyLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 18: _t->setFeetLedColor((*reinterpret_cast< std::add_pointer_t<QColor>>(_a[1]))); break;
+        case 19: _t->triggerHeadImpact(); break;
+        case 20: _t->triggerChestImpact(); break;
+        case 21: _t->triggerBellyImpact(); break;
+        case 22: _t->triggerFeetImpact(); break;
+        case 23: _t->setLedColor((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 24: _t->resetAllLeds(); break;
+        case 25: { bool _r = _t->isWebSocketConnected();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
-        case 24: _t->resetAllImpacts(); break;
-        case 25: _t->onConnected(); break;
-        case 26: _t->onDisconnected(); break;
-        case 27: _t->onMessageReceived((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 28: _t->onError((*reinterpret_cast< std::add_pointer_t<QAbstractSocket::SocketError>>(_a[1]))); break;
+        case 26: _t->resetAllImpacts(); break;
+        case 27: _t->onConnected(); break;
+        case 28: _t->onDisconnected(); break;
+        case 29: _t->onMessageReceived((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 30: _t->onError((*reinterpret_cast< std::add_pointer_t<QAbstractSocket::SocketError>>(_a[1]))); break;
+        case 31: _t->handleSocketStateChange((*reinterpret_cast< std::add_pointer_t<QAbstractSocket::SocketState>>(_a[1]))); break;
+        case 32: _t->startConnection(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
-        case 28:
+        case 30:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
                 *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QAbstractSocket::SocketError >(); break;
+            }
+            break;
+        case 31:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
+            case 0:
+                *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType::fromType< QAbstractSocket::SocketState >(); break;
             }
             break;
         }
@@ -404,6 +446,20 @@ void ImpactVisualizer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
                 return;
             }
         }
+        {
+            using _t = void (ImpactVisualizer::*)(QString );
+            if (_t _q_method = &ImpactVisualizer::connectionStatusChanged; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 9;
+                return;
+            }
+        }
+        {
+            using _t = void (ImpactVisualizer::*)(bool );
+            if (_t _q_method = &ImpactVisualizer::handshakeCompleted; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 10;
+                return;
+            }
+        }
     } else if (_c == QMetaObject::ReadProperty) {
         auto *_t = static_cast<ImpactVisualizer *>(_o);
         (void)_t;
@@ -459,13 +515,13 @@ int ImpactVisualizer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 29)
+        if (_id < 33)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 29;
+        _id -= 33;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 29)
+        if (_id < 33)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 29;
+        _id -= 33;
     }else if (_c == QMetaObject::ReadProperty || _c == QMetaObject::WriteProperty
             || _c == QMetaObject::ResetProperty || _c == QMetaObject::BindableProperty
             || _c == QMetaObject::RegisterPropertyMetaType) {
@@ -536,5 +592,19 @@ void ImpactVisualizer::webSocketConnectedChanged(bool _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 8, _a);
+}
+
+// SIGNAL 9
+void ImpactVisualizer::connectionStatusChanged(QString _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 9, _a);
+}
+
+// SIGNAL 10
+void ImpactVisualizer::handshakeCompleted(bool _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 10, _a);
 }
 QT_WARNING_POP
