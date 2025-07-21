@@ -126,11 +126,11 @@
 
 ImpactVisualizer::ImpactVisualizer(QQuickItem *parent)
     : QQuickItem(parent),
-    m_headImpact(false),
-    m_chestImpact(false),
-    m_bellyImpact(false),
-    m_feetImpact(false),
-    m_headLedColor(Qt::white),
+    m_headImpact(false), //capacete
+    m_chestImpact(false), //cinto
+    m_bellyImpact(false), //travaquedas
+    m_feetImpact(false), //botas
+    m_headLedColor(Qt::white), // branco no data, vermelho unsafe, verde safe, amarelo unsave warning
     m_chestLedColor(Qt::white),
     m_bellyLedColor(Qt::white),
     m_feetLedColor(Qt::white),
@@ -145,8 +145,8 @@ ImpactVisualizer::ImpactVisualizer(QQuickItem *parent)
     connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
             this, &ImpactVisualizer::onError);
     connect(m_socket, &QWebSocket::stateChanged,
-            this, &ImpactVisualizer::handleSocketStateChange);
-    //connectWebSocket();
+            this, &ImpactVisualizer::connectionStatus);
+
 }
 
 // Getters mantidos como estão
@@ -166,28 +166,28 @@ void ImpactVisualizer::setHeadImpact(bool headImpact) {
     m_headImpact = headImpact;
     emit headImpactChanged(m_headImpact);
     // Cor relacionada ao estado de impacto
-    setHeadLedColor(m_headImpact ? Qt::red : Qt::green);
+    //setHeadLedColor(m_headImpact ? Qt::red : Qt::green : Qt::yellow);
 }
 
 void ImpactVisualizer::setChestImpact(bool chestImpact) {
     if (m_chestImpact == chestImpact) return;
     m_chestImpact = chestImpact;
     emit chestImpactChanged(m_chestImpact);
-    setChestLedColor(m_chestImpact ? Qt::red : Qt::green);
+    //setChestLedColor(m_chestImpact ? Qt::red : Qt::green : Qt::yellow);
 }
 
 void ImpactVisualizer::setBellyImpact(bool bellyImpact) {
     if (m_bellyImpact == bellyImpact) return;
     m_bellyImpact = bellyImpact;
     emit bellyImpactChanged(m_bellyImpact);
-    setBellyLedColor(m_bellyImpact ? Qt::red : Qt::green);
+    //setBellyLedColor(m_bellyImpact ? Qt::red : Qt::green : Qt::yellow);
 }
 
 void ImpactVisualizer::setFeetImpact(bool feetImpact) {
     if (m_feetImpact == feetImpact) return;
     m_feetImpact = feetImpact;
     emit feetImpactChanged(m_feetImpact);
-    setFeetLedColor(m_feetImpact ? Qt::red : Qt::green);
+    //setFeetLedColor(m_feetImpact ? Qt::red : Qt::green : Qt::yellow);
 }
 
 // Setters de cor (mantidos)
@@ -195,57 +195,123 @@ void ImpactVisualizer::setHeadLedColor(const QColor &color) {
     if (m_headLedColor == color) return;
     m_headLedColor = color;
     emit headLedColorChanged(m_headLedColor);
-    qDebug() << "Head LED:" << color.name();
+    qDebug() << "Capacete LED:" << color.name();
+
+    if (color == Qt::red) {
+        setHeadImpact(true);
+    } else if (color == Qt::green) {
+        setHeadImpact(false);
+    }
 }
 
 void ImpactVisualizer::setChestLedColor(const QColor &color) {
     if (m_chestLedColor == color) return;
     m_chestLedColor = color;
     emit chestLedColorChanged(m_chestLedColor);
-    qDebug() << "Chest LED:" << color.name();
+    qDebug() << "Cinto LED:" << color.name();
+
+    if (color == Qt::red) {
+        setChestImpact(true);
+    } else if (color == Qt::green) {
+        setChestImpact(false);
+    }
 }
 
 void ImpactVisualizer::setBellyLedColor(const QColor &color) {
     if (m_bellyLedColor == color) return;
     m_bellyLedColor = color;
     emit bellyLedColorChanged(m_bellyLedColor);
-    qDebug() << "Belly LED:" << color.name();
+    qDebug() << "Travaquedas LED:" << color.name();
+
+    if (color == Qt::red) {
+        setBellyImpact(true);
+    } else if (color == Qt::green) {
+        setBellyImpact(false);
+    }
 }
 
 void ImpactVisualizer::setFeetLedColor(const QColor &color) {
     if (m_feetLedColor == color) return;
     m_feetLedColor = color;
     emit feetLedColorChanged(m_feetLedColor);
-    qDebug() << "Feet LED:" << color.name();
+    qDebug() << "Botas LED:" << color.name();
+
+    if (color == Qt::red) {
+        setFeetImpact(true);
+    } else if (color == Qt::green) {
+        setFeetImpact(false);
+    }
 }
 
 // Método unificado para controle de LEDs
 void ImpactVisualizer::setLedColor(const QString &zone, const QString &color) {
+    // QColor qColor;
+
+    // if (color.compare("red", Qt::CaseInsensitive) == 0) {
+    //     qColor = Qt::red;
+    // } else if (color.compare("green", Qt::CaseInsensitive) == 0) {
+    //     qColor = QColor("#32cd32"); // Verde-limão
+    // } else if (color.compare("yellow", Qt::CaseInsensitive) == 0) {
+    //     qColor = QColor("yellow"); // Amarelo
+    // } else {
+    //     qColor = Qt::white; // Default/neutro
+    // }
+
+    // if (zone.compare("head", Qt::CaseInsensitive) == 0) {
+    //     setHeadLedColor(qColor);
+    //     //setHeadImpact(qColor == Qt::red); // Atualiza estado lógico
+    // }
+    // else if (zone.compare("chest", Qt::CaseInsensitive) == 0) {
+    //     setChestLedColor(qColor);
+    //     //setChestImpact(qColor == Qt::red);
+    // }
+    // else if (zone.compare("belly", Qt::CaseInsensitive) == 0) {
+    //     setBellyLedColor(qColor);
+    //     //setBellyImpact(qColor == Qt::red);
+    // }
+    // else if (zone.compare("feet", Qt::CaseInsensitive) == 0) {
+    //     setFeetLedColor(qColor);
+    //     //setFeetImpact(qColor == Qt::red);
+    // }
     QColor qColor;
 
     if (color.compare("red", Qt::CaseInsensitive) == 0) {
         qColor = Qt::red;
     } else if (color.compare("green", Qt::CaseInsensitive) == 0) {
-        qColor = QColor("#32cd32"); // Verde-limão
+        qColor = QColor("#32cd32");
+    } else if (color.compare("yellow", Qt::CaseInsensitive) == 0) {
+        qColor = Qt::yellow;
     } else {
-        qColor = Qt::white; // Default/neutro
+        qColor = Qt::white;
     }
 
-    if (zone.compare("head", Qt::CaseInsensitive) == 0) {
-        setHeadLedColor(qColor);
-        setHeadImpact(qColor == Qt::red); // Atualiza estado lógico
+    if (zone.compare("capacete", Qt::CaseInsensitive) == 0) {
+        if (m_headLedColor != qColor) {
+            m_headLedColor = qColor;
+            emit headLedColorChanged(m_headLedColor);
+            qDebug() << "Head LED color changed to:" << m_headLedColor.name();
+        }
     }
-    else if (zone.compare("chest", Qt::CaseInsensitive) == 0) {
-        setChestLedColor(qColor);
-        setChestImpact(qColor == Qt::red);
+    else if (zone.compare("cinto", Qt::CaseInsensitive) == 0) {
+        if (m_chestLedColor != qColor) {
+            m_chestLedColor = qColor;
+            emit chestLedColorChanged(m_chestLedColor);
+            qDebug() << "Chest LED color changed to:" << m_chestLedColor.name();
+        }
     }
-    else if (zone.compare("belly", Qt::CaseInsensitive) == 0) {
-        setBellyLedColor(qColor);
-        setBellyImpact(qColor == Qt::red);
+    else if (zone.compare("travaquedas", Qt::CaseInsensitive) == 0) {
+        if (m_bellyLedColor != qColor) {
+            m_bellyLedColor = qColor;
+            emit bellyLedColorChanged(m_bellyLedColor);
+            qDebug() << "Belly LED color changed to:" << m_bellyLedColor.name();
+        }
     }
-    else if (zone.compare("feet", Qt::CaseInsensitive) == 0) {
-        setFeetLedColor(qColor);
-        setFeetImpact(qColor == Qt::red);
+    else if (zone.compare("botas", Qt::CaseInsensitive) == 0) {
+        if (m_feetLedColor != qColor) {
+            m_feetLedColor = qColor;
+            emit feetLedColorChanged(m_feetLedColor);
+            qDebug() << "Feet LED color changed to:" << m_feetLedColor.name();
+        }
     }
 }
 
@@ -284,7 +350,19 @@ void ImpactVisualizer::triggerFeetImpact() {
     setFeetImpact(true);
     setFeetLedColor(Qt::red);
 }
-
+// Adicionando trigger para warning
+void ImpactVisualizer::triggerHeadWarning() {
+    setHeadLedColor(Qt::yellow);
+}
+void ImpactVisualizer::triggerChestWarning() {
+    setChestLedColor(Qt::yellow);
+}
+void ImpactVisualizer::triggerBellyWarning() {
+    setBellyLedColor(Qt::yellow);
+}
+void ImpactVisualizer::triggerFeetWarning() {
+    setFeetLedColor(Qt::yellow);
+}
 void ImpactVisualizer::initializeConnection()
 {
     if(m_socket->state() == QAbstractSocket::UnconnectedState) {
@@ -316,7 +394,7 @@ void ImpactVisualizer::connectWebSocket()
     // } else {
     //     serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";
     // }
-    serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";//"wss://7248700b1416.ngrok-free.app/socket.io/?EIO=4&transport=websocket";
+    serverUrl = "wss://211b584c6427.ngrok-free.app/socket.io/?EIO=4&transport=websocket";//"ws://localhost:5000/socket.io/?EIO=4&transport=websocket";
     qDebug() << "Connecting to WebSocket:" << serverUrl;
 
     m_handshakeCompleted = false;
@@ -333,6 +411,7 @@ void ImpactVisualizer::onConnected()
     qDebug() << "WebSocket connected!";
     m_webSocketConnected = true;
     emit webSocketConnectedChanged(true);
+    emit connectionStatusChanged(state());
 
     // Socket.IO handshake sequence
     m_socket->sendTextMessage("2probe");
@@ -351,6 +430,7 @@ void ImpactVisualizer::onDisconnected()
     m_webSocketConnected = false;
     m_handshakeCompleted = false;
     emit webSocketConnectedChanged(false);
+    emit connectionStatusChanged(state());
 }
 
 void ImpactVisualizer::onError(QAbstractSocket::SocketError error)
@@ -419,20 +499,26 @@ void ImpactVisualizer::onMessageReceived(const QString &message)
         else if (event == "impact_update") {
             QString zone = data["zone"].toString();
             bool impact = data["impact"].toBool();
+            QString color = data["led_color"].toString();
 
+            setLedColor(zone, color);
 
-            // Call the specific impact method based on zone
-            if (zone == "head") {
-                setHeadImpact(impact);
+            // Force property updates
+            if (zone == "capacete") {
+                emit headImpactChanged(impact);
+                emit headLedColorChanged(m_headLedColor);
             }
-            else if (zone == "chest") {
-                setChestImpact(impact);
+            else if (zone == "cinto") {
+                emit chestImpactChanged(impact);
+                emit chestLedColorChanged(m_chestLedColor);
             }
-            else if (zone == "belly") {
-                setBellyImpact(impact);
+            else if (zone == "travaquedas") {
+                emit bellyImpactChanged(impact);
+                emit bellyLedColorChanged(m_bellyLedColor);
             }
-            else if (zone == "feet") {
-                setFeetImpact(impact);
+            else if (zone == "botas") {
+                emit feetImpactChanged(impact);
+                emit feetLedColorChanged(m_feetLedColor);
             }
         }
         else if (event == "state_update") {
@@ -443,10 +529,10 @@ void ImpactVisualizer::onMessageReceived(const QString &message)
             }
 
             // Se precisar resetar tudo, chame a função existente
-            if (leds["head"] == "white" &&
-                leds["chest"] == "white" &&
-                leds["belly"] == "white" &&
-                leds["feet"] == "white") {
+            if (leds["capacete"] == "white" &&
+                leds["cinto"] == "white" &&
+                leds["travaquedas"] == "white" &&
+                leds["botas"] == "white") {
                 resetAllLeds(); // Reutiliza sua função existente
             }
         }
@@ -454,16 +540,37 @@ void ImpactVisualizer::onMessageReceived(const QString &message)
     }
 }
 
-void ImpactVisualizer::handleSocketStateChange(QAbstractSocket::SocketState state)
+// void ImpactVisualizer::handleSocketStateChange(QAbstractSocket::SocketState state)
+// {
+//     QString status;
+//     switch(state) {
+//     case QAbstractSocket::UnconnectedState: status = "Disconnected"; break;
+//     case QAbstractSocket::ConnectingState: status = "Connecting"; break;
+//     case QAbstractSocket::ConnectedState:
+//         status = m_handshakeCompleted ? "Connected" : "Handshaking";
+//         break;
+//     default: status = "Unknown";
+//     }
+//     emit connectionStatusChanged(status);
+// }
+QString ImpactVisualizer::connectionStatus() const
 {
-    QString status;
-    switch(state) {
-    case QAbstractSocket::UnconnectedState: status = "Disconnected"; break;
-    case QAbstractSocket::ConnectingState: status = "Connecting"; break;
+    switch(m_socket->state()) {
+    case QAbstractSocket::UnconnectedState:
+        return "Disconnected";
+    case QAbstractSocket::ConnectingState:
+        return "Connecting...";
     case QAbstractSocket::ConnectedState:
-        status = m_handshakeCompleted ? "Connected" : "Handshaking";
-        break;
-    default: status = "Unknown";
+        return m_handshakeCompleted ? "Connected" : "Handshaking";
+    case QAbstractSocket::ClosingState:
+        return "Closing";
+    case QAbstractSocket::HostLookupState:
+        return "Looking up host";
+    case QAbstractSocket::BoundState:
+        return "Bound";
+    case QAbstractSocket::ListeningState:
+        return "Listening";
+    default:
+        return "Unknown state";
     }
-    emit connectionStatusChanged(status);
 }

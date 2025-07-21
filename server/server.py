@@ -56,17 +56,17 @@ def handle_disconnect():
 
 # Global state storage
 led_states = {
-    "head": "white",
-    "chest": "white", 
-    "belly": "white",
-    "feet": "white"
+    "capacete": "white",
+    "cinto": "white", 
+    "travaquedas": "white",
+    "botas": "white"
 }
 
 impact_states = {
-    "head": False,
-    "chest": False,
-    "belly": False,
-    "feet": False
+    "capacete": False,
+    "cinto": False,
+    "travaquedas": False,
+    "botas": False
 }
 
 # Track last update time for each state
@@ -83,6 +83,31 @@ def get_status():
         "last_update": last_update
     })
 
+#@app.route('/api/led', methods=['POST'])
+#def set_led():
+#    """Set individual LED color"""
+#    global last_update
+#    
+#    data = request.get_json()
+#    led_zone = data.get('led')
+#    color = data.get('color')
+#    
+#    if led_zone not in led_states:
+#        return jsonify({"success": False, "error": "Invalid LED zone"}), 400
+#    
+    # Update LED state
+#    led_states[led_zone] = color
+#    last_update = time.time()
+#    
+#    print(f"LED {led_zone} set to {color}")
+#    socketio.emit('led_update', {'led': led_zone, 'color': color})
+#
+#    return jsonify({
+#        "success": True,
+#        "led": led_zone,
+#        "color": color,
+#        "timestamp": last_update
+#    })
 @app.route('/api/led', methods=['POST'])
 def set_led():
     """Set individual LED color"""
@@ -97,15 +122,29 @@ def set_led():
     
     # Update LED state
     led_states[led_zone] = color
+    
+    # Update impact state based on color
+    if color == "red":
+        impact_states[led_zone] = True
+    elif color in ["green", "white", "yellow"]:
+        impact_states[led_zone] = False
+    
     last_update = time.time()
     
     print(f"LED {led_zone} set to {color}")
+    # Emit both updates
     socketio.emit('led_update', {'led': led_zone, 'color': color})
+    socketio.emit('impact_update', {
+        'zone': led_zone,
+        'impact': impact_states[led_zone],
+        'led_color': color
+    })
 
     return jsonify({
         "success": True,
         "led": led_zone,
         "color": color,
+        "impact": impact_states[led_zone],
         "timestamp": last_update
     })
 
@@ -139,6 +178,43 @@ def reset_all_leds():
         "timestamp": last_update
     })
 
+#@app.route('/api/impact', methods=['POST'])
+#def set_impact():
+#    """Set impact status for a zone"""
+#    global last_update
+#    
+#    data = request.get_json()
+#    zone = data.get('zone')
+#    impact = data.get('impact', False)
+#    
+#    if zone not in impact_states:
+#        return jsonify({"success": False, "error": "Invalid impact zone"}), 400
+#    
+#    # Update impact state
+#    impact_states[zone] = impact
+#    
+    # Automatically set LED color based on impact
+#    if impact:
+#        led_states[zone] = "red"
+#    else:
+#        led_states[zone] = "green"
+#    
+#    last_update = time.time()
+#    
+#    print(f"Impact {zone} set to {impact}")
+#    socketio.emit('impact_update', {
+#    'zone': zone,
+#    'impact': impact,
+#    'led_color': led_states[zone]
+#})
+#
+#    return jsonify({
+#        "success": True,
+#        "zone": zone,
+#        "impact": impact,
+#        "led_color": led_states[zone],
+#        "timestamp": last_update
+#    })
 @app.route('/api/impact', methods=['POST'])
 def set_impact():
     """Set impact status for a zone"""
@@ -147,6 +223,7 @@ def set_impact():
     data = request.get_json()
     zone = data.get('zone')
     impact = data.get('impact', False)
+    warning = data.get('warning', False)  # New warning state
     
     if zone not in impact_states:
         return jsonify({"success": False, "error": "Invalid impact zone"}), 400
@@ -154,90 +231,30 @@ def set_impact():
     # Update impact state
     impact_states[zone] = impact
     
-    # Automatically set LED color based on impact
+    # Automatically set LED color based on impact and warning
     if impact:
         led_states[zone] = "red"
+    elif warning:
+        led_states[zone] = "yellow"
     else:
         led_states[zone] = "green"
     
     last_update = time.time()
     
-    print(f"Impact {zone} set to {impact}")
+    print(f"Impact {zone} set to {impact}, warning: {warning}")
     socketio.emit('impact_update', {
-    'zone': zone,
-    'impact': impact,
-    'led_color': led_states[zone]
-})
+        'zone': zone,
+        'impact': impact,
+        'warning': warning,
+        'led_color': led_states[zone]
+    })
 
     return jsonify({
         "success": True,
         "zone": zone,
         "impact": impact,
+        "warning": warning,
         "led_color": led_states[zone],
-        "timestamp": last_update
-    })
-
-@app.route('/api/simulate/impact', methods=['POST'])
-def simulate_impact():
-    """Simulate an impact for testing"""
-    global last_update
-    
-    data = request.get_json()
-    zone = data.get('zone', 'head')
-    duration = data.get('duration', 3)  # Impact duration in seconds
-    
-    if zone not in impact_states:
-        return jsonify({"success": False, "error": "Invalid zone"}), 400
-    
-    # Set impact state
-    impact_states[zone] = True
-    led_states[zone] = "red"
-    last_update = time.time()
-    
-    print(f"Simulating impact on {zone} for {duration} seconds")
-    
-    # In a real application, you might want to use a background task
-    # to automatically reset the impact after the duration
-    
-    return jsonify({
-        "success": True,
-        "zone": zone,
-        "impact": True,
-        "duration": duration,
-        "timestamp": last_update
-    })
-
-@app.route('/api/simulate/clear', methods=['POST'])
-def clear_impact():
-    """Clear impact simulation"""
-    global last_update
-    
-    data = request.get_json()
-    zone = data.get('zone')
-    
-    if zone and zone in impact_states:
-        impact_states[zone] = False
-        led_states[zone] = "green"
-    else:
-        # Clear all impacts
-        for z in impact_states:
-            impact_states[z] = False
-            led_states[z] = "white"
-    
-    last_update = time.time()
-    
-    print(f"Cleared impact for {zone if zone else 'all zones'}")
-    
-    # Emit updates
-    socketio.emit('state_update', {
-        "leds": led_states,
-        "impacts": impact_states,
-        "timestamp": time.time()
-    })
-    
-    return jsonify({
-        "success": True,
-        "cleared": zone if zone else "all",
         "timestamp": last_update
     })
 
@@ -246,142 +263,123 @@ def clear_impact():
 def index():
     return '''
     <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Impact Visualizer Control</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .controls { margin: 20px 0; }
-            .zone { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
-            button { margin: 5px; padding: 5px 10px; }
-            .status { background: #f0f0f0; padding: 10px; margin: 10px 0; }
-        </style>
-    </head>
-    <body>
-        <h1>Impact Visualizer Control Panel</h1>
-        
-        <div class="status" id="status">
-            <h3>Current Status</h3>
-            <div id="led-status"></div>
-            <div id="impact-status"></div>
+<html>
+<head>
+    <title>Impact Visualizer Control</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .controls { margin: 20px 0; }
+        .zone { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        button { margin: 5px; padding: 5px 10px; }
+        .status { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+        .red { background-color: #ffcccc; }
+        .yellow { background-color: #ffffcc; }
+        .green { background-color: #ccffcc; }
+        .white { background-color: #ffffff; }
+    </style>
+</head>
+<body>
+    <h1>Impact Visualizer Control Panel</h1>
+    
+    <div class="status" id="status">
+        <h3>Current Status</h3>
+        <div id="led-status"></div>
+        <div id="impact-status"></div>
+    </div>
+    
+    <div class="controls">
+        <h3>LED Controls</h3>
+        <div class="zone">
+            <strong>Capacete:</strong>
+            <button class="green" onclick="setLed('capacete', 'green')">Safe (Green)</button>
+            <button class="red" onclick="setLed('capacete', 'red')">Unsafe (Red)</button>
+            <button class="yellow" onclick="setLed('capacete', 'yellow')">Warning (Yellow)</button>
+            <button class="white" onclick="setLed('capacete', 'white')">Reset (White)</button>
         </div>
-        
-        <div class="controls">
-            <h3>LED Controls</h3>
-            <div class="zone">
-                <strong>Head:</strong>
-                <button onclick="setLed('head', 'green')">Green</button>
-                <button onclick="setLed('head', 'red')">Red</button>
-                <button onclick="setLed('head', 'white')">White</button>
-            </div>
-            <div class="zone">
-                <strong>Chest:</strong>
-                <button onclick="setLed('chest', 'green')">Green</button>
-                <button onclick="setLed('chest', 'red')">Red</button>
-                <button onclick="setLed('chest', 'white')">White</button>
-            </div>
-            <div class="zone">
-                <strong>Belly:</strong>
-                <button onclick="setLed('belly', 'green')">Green</button>
-                <button onclick="setLed('belly', 'red')">Red</button>
-                <button onclick="setLed('belly', 'white')">White</button>
-            </div>
-            <div class="zone">
-                <strong>Feet:</strong>
-                <button onclick="setLed('feet', 'green')">Green</button>
-                <button onclick="setLed('feet', 'red')">Red</button>
-                <button onclick="setLed('feet', 'white')">White</button>
-            </div>
+        <div class="zone">
+            <strong>Cinto:</strong>
+            <button class="green" onclick="setLed('cinto', 'green')">Safe (Green)</button>
+            <button class="red" onclick="setLed('cinto', 'red')">Unsafe (Red)</button>
+            <button class="yellow" onclick="setLed('cinto', 'yellow')">Warning (Yellow)</button>
+            <button class="white" onclick="setLed('cinto', 'white')">Reset (White)</button>
         </div>
-        
-        <div class="controls">
-            <h3>Impact Simulation</h3>
-            <div class="zone">
-                <button onclick="simulateImpact('head')">Head Impact</button>
-                <button onclick="simulateImpact('chest')">Chest Impact</button>
-                <button onclick="simulateImpact('belly')">Belly Impact</button>
-                <button onclick="simulateImpact('feet')">Feet Impact</button>
-            </div>
-            <button onclick="clearAllImpacts()">Clear All Impacts</button>
+        <div class="zone">
+            <strong>Travaquedas:</strong>
+            <button class="green" onclick="setLed('travaquedas', 'green')">Safe (Green)</button>
+            <button class="red" onclick="setLed('travaquedas', 'red')">Unsafe (Red)</button>
+            <button class="yellow" onclick="setLed('travaquedas', 'yellow')">Warning (Yellow)</button>
+            <button class="white" onclick="setLed('travaquedas', 'white')">Reset (White)</button>
         </div>
-        
-        <div class="controls">
-            <button onclick="resetAll()">Reset All</button>
-            <button onclick="refreshStatus()">Refresh Status</button>
+        <div class="zone">
+            <strong>Botas:</strong>
+            <button class="green" onclick="setLed('botas', 'green')">Safe (Green)</button>
+            <button class="red" onclick="setLed('botas', 'red')">Unsafe (Red)</button>
+            <button class="yellow" onclick="setLed('botas', 'yellow')">Warning (Yellow)</button>
+            <button class="white" onclick="setLed('botas', 'white')">Reset (White)</button>
         </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="resetAll()">Reset All (White)</button>
+        <button onclick="refreshStatus()">Refresh Status</button>
+    </div>
+    
+    <script>
+        function setLed(zone, color) {
+            fetch('/api/led', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({led: zone, color: color})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('LED set:', data);
+                refreshStatus();
+            });
+        }
         
-        <script>
-            function setLed(zone, color) {
-                fetch('/api/led', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({led: zone, color: color})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('LED set:', data);
-                    refreshStatus();
-                });
-            }
-            
-            function simulateImpact(zone) {
-                fetch('/api/simulate/impact', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({zone: zone})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Impact simulated:', data);
-                    refreshStatus();
-                });
-            }
-            
-            function clearAllImpacts() {
-                fetch('/api/simulate/clear', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Impacts cleared:', data);
-                    refreshStatus();
-                });
-            }
-            
-            function resetAll() {
-                fetch('/api/led/all', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('All reset:', data);
-                    refreshStatus();
-                });
-            }
-            
-            function refreshStatus() {
-                fetch('/api/status')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('led-status').innerHTML = 
-                        '<strong>LEDs:</strong> ' + JSON.stringify(data.leds);
-                    document.getElementById('impact-status').innerHTML = 
-                        '<strong>Impacts:</strong> ' + JSON.stringify(data.impacts);
-                });
-            }
-            
-            // Auto-refresh every 5 seconds
-            setInterval(refreshStatus, 5000);
-            
-            // Initial load
-            refreshStatus();
-        </script>
-    </body>
-    </html>
+        function resetAll() {
+            fetch('/api/led/all', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('All reset:', data);
+                refreshStatus();
+            });
+        }
+        
+        function refreshStatus() {
+            fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                let ledHtml = '<strong>LEDs:</strong><ul>';
+                for (const [zone, color] of Object.entries(data.leds)) {
+                    ledHtml += `<li>${zone}: <span class="${color}">${color}</span></li>`;
+                }
+                ledHtml += '</ul>';
+                
+                let impactHtml = '<strong>Impacts:</strong><ul>';
+                for (const [zone, impact] of Object.entries(data.impacts)) {
+                    impactHtml += `<li>${zone}: ${impact ? 'UNSAFE' : 'Safe'}</li>`;
+                }
+                impactHtml += '</ul>';
+                
+                document.getElementById('led-status').innerHTML = ledHtml;
+                document.getElementById('impact-status').innerHTML = impactHtml;
+            });
+        }
+        
+        // Auto-refresh every 5 seconds
+        setInterval(refreshStatus, 5000);
+        
+        // Initial load
+        refreshStatus();
+    </script>
+</body>
+</html>
     '''
 def start_ngrok():
     ngrok_path = os.path.join(os.path.expanduser('~'), 'ngrok')  # Ajuste para o caminho do seu Ngrok
@@ -396,7 +394,5 @@ if __name__ == '__main__':
     print("  POST /api/led - Set LED color")
     print("  POST /api/led/all - Reset all LEDs")
     print("  POST /api/impact - Set impact status")
-    print("  POST /api/simulate/impact - Simulate impact")
-    print("  POST /api/simulate/clear - Clear impacts")
-    
+        
     socketio.run(app, debug=True, host='0.0.0.0', port=5000,allow_unsafe_werkzeug=True)  # Necessário para algumas versões do Flask

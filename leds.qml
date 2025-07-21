@@ -316,7 +316,7 @@ Window {
 
     function sendLedCommand(zone, color) {
         var xhr = new XMLHttpRequest();
-        var url = "http://localhost:5000/api/led"//"https://211b584c6427.ngrok-free.app/api/led";//"http://localhost:5000/api/led";
+        var url = "https://211b584c6427.ngrok-free.app/api/led";//"http://localhost:5000/api/led";
         var data = JSON.stringify({
             led: zone,
             color: color
@@ -362,24 +362,28 @@ Window {
                 xhr.send();
     }
 
-    function safeSendCommand(zone, color) {
-        if (impactVisualizer.websocketConnected) {
-            sendLedCommand(zone, color);
-        } else {
-            // Atualiza localmente quando offline
-            impactVisualizer.setLedColor(zone, color);
-            console.log("Modo offline: LED", zone, "definido para", color);
-        }
-    }
+    // function safeSendCommand(zone, color) {
+    //     if (impactVisualizer.websocketConnected) {
+    //         sendLedCommand(zone, color);
+    //     } else {
+    //         // Atualiza localmente quando offline
+    //         impactVisualizer.setLedColor(zone, color);
+    //         console.log("Modo offline: LED", zone, "definido para", color);
+    //     }
+    // }
+
     ImpactVisualizer {
         id: impactVisualizer
-        anchors.fill: parent
-
+        //anchors.fill: parent
+        width: parent.width
+        height: parent.height - footer.height - 20 // Reserve space for footer + margin
         // Background image
         Image {
             id: bodySilhouette
             source: "qrc:/HumanBody.png"
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: 900 // Adjust scale factor as needed
+            height: 1000 // Maintain aspect ratio
             fillMode: Image.PreserveAspectFit
         }
         Component.onCompleted: {
@@ -397,7 +401,7 @@ Window {
                 border.color: "black"
                 border.width: 2
                 x: 425
-                y: 30
+                y: 38
             }
 
             // Chest LED
@@ -446,125 +450,230 @@ Window {
             //visible: !selfTestRunning
 
             // Head LED controls
-            Row {
-                spacing: 5
-                Button {
-                    text: "Head Green"
-                    onClicked: {
-                        console.log("🟢 Head Green button pressed");
-                        sendLedCommand("head", "green");
-                    }
-                }
-                Button {
-                    text: "Head Red"
-                    onClicked: {
-                        console.log("🔴 Head Red button pressed");
-                        sendLedCommand("head", "red");
-                    }
-                }
-            }
+            // Row {
+            //     spacing: 5
+            //     Button {
+            //         text: "Head Green"
+            //         onClicked: {
+            //             console.log("🟢 Head Green button pressed");
+            //             sendLedCommand("head", "green");
+            //         }
+            //     }
+            //     Button {
+            //         text: "Head Red"
+            //         onClicked: {
+            //             console.log("🔴 Head Red button pressed");
+            //             sendLedCommand("head", "red");
+            //         }
+            //     }
+            // }
 
-            // Chest LED controls
-            Row {
-                spacing: 5
-                Button {
-                    text: "Chest Green"
-                    onClicked: {
-                        console.log("🟢 Chest Green button pressed");
-                        //sendLedCommand("chest", "green");
-                        safeSendCommand("chest", "green");
-                    }
-                }
-                Button {
-                    text: "Chest Red"
-                    onClicked: {
-                        console.log("🔴 Chest Red button pressed");
-                        //sendLedCommand("chest", "red");
-                        safeSendCommand("chest", "red");
-                    }
-                }
-            }
+            // // Chest LED controls
+            // Row {
+            //     spacing: 5
+            //     Button {
+            //         text: "Chest Green"
+            //         onClicked: {
+            //             console.log("🟢 Chest Green button pressed");
+            //             //sendLedCommand("chest", "green");
+            //             safeSendCommand("chest", "green");
+            //         }
+            //     }
+            //     Button {
+            //         text: "Chest Red"
+            //         onClicked: {
+            //             console.log("🔴 Chest Red button pressed");
+            //             //sendLedCommand("chest", "red");
+            //             safeSendCommand("chest", "red");
+            //         }
+            //     }
+            // }
 
-            // Belly LED controls
-            Row {
-                spacing: 5
-                Button {
-                    text: "Belly Green"
-                    onClicked: {
-                        console.log("🟢 Belly Green button pressed");
-                        sendLedCommand("belly", "green");
-                    }
-                }
-                Button {
-                    text: "Belly Red"
-                    onClicked: {
-                        console.log("🔴 Belly Red button pressed");
-                        sendLedCommand("belly", "red");
-                    }
-                }
-            }
+            // // Belly LED controls
+            // Row {
+            //     spacing: 5
+            //     Button {
+            //         text: "Belly Green"
+            //         onClicked: {
+            //             console.log("🟢 Belly Green button pressed");
+            //             sendLedCommand("belly", "green");
+            //         }
+            //     }
+            //     Button {
+            //         text: "Belly Red"
+            //         onClicked: {
+            //             console.log("🔴 Belly Red button pressed");
+            //             sendLedCommand("belly", "red");
+            //         }
+            //     }
+            // }
 
-            // Feet LED controls
-            Row {
-                spacing: 5
-                Button {
-                    text: "Feet Green"
-                    onClicked: {
-                        console.log("🟢 Feet Green button pressed");
-                        sendLedCommand("feet", "green");
-                    }
-                }
-                Button {
-                    text: "Feet Red"
-                    onClicked: {
-                        console.log("🔴 Feet Red button pressed");
-                        sendLedCommand("feet", "red");
-                    }
-                }
-            }
+            // // Feet LED controls
+            // Row {
+            //     spacing: 5
+            //     Button {
+            //         text: "Feet Green"
+            //         onClicked: {
+            //             console.log("🟢 Feet Green button pressed");
+            //             sendLedCommand("feet", "green");
+            //         }
+            //     }
+            //     Button {
+            //         text: "Feet Red"
+            //         onClicked: {
+            //             console.log("🔴 Feet Red button pressed");
+            //             sendLedCommand("feet", "red");
+            //         }
+            //     }
+            // }
 
             // Reset button
-            Button {
-                text: "Reset All via API"
-                onClicked: {
-                    console.log("⚪ Reset All button pressed");
-                    resetAllLeds();
+            Rectangle {
+                id:resetButton
+                width: 150
+                height: 60
+                radius: width / 2
+                color: "#ffa500"////"transparent""#ffb74d""#ffd54f""#ff8c00"
+                border.color: "black"
+                border.width: 3
+
+                Text {
+                    text: "Reset All"
+                    anchors.centerIn: parent
+                    font.pixelSize: 16
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log("⚪ Reset All button pressed");
+                        resetAllLeds();
+                    }
                 }
             }
-        }
 
-        // Impact status indicators (optional - shows impact state)
+        }
         Column {
             anchors.left: parent.left
             anchors.top: parent.top
             spacing: 5
             padding: 20
-            //visible: !selfTestRunning
 
             Text {
-                Text {
-                    text: "Estado: " + impactVisualizer.connectionStatus()
+                // text: "Estado: " + impactVisualizer.connectionStatus()
+                // color: impactVisualizer.webSocketConnected ? "green" : "red"
+                // font.bold: true
+                // font.pixelSize: 14
+                text: {
+                        if (impactVisualizer.webSocketConnected) {
+                            return "Estado: Conectado";
+                        } else {
+                            return "Estado: Desconectado";
+                        }
+                    }
                     color: impactVisualizer.webSocketConnected ? "green" : "red"
+                    font.bold: true
+                    font.pixelSize: 14
+
+                    // Debug connection status changes
+                    onTextChanged: console.log("Connection status changed:", text, "Color:", color)
+            }
+
+            // Capacete (Head)
+            Text {
+                text: {
+                    var color = impactVisualizer.headLedColor;
+                    this.color = (color.toString() === "#ffffff") ? "black" : color;
+
+                    if (color.toString() === "#ff0000") return "Capacete: UNSAFE (IMPACT)";
+                    else if (color.toString() === "#ffff00") return "Capacete: WARNING - UNSAFE";
+                    else if (color.toString() === "#32cd32") return "Capacete: SAFE";
+                    else return "Capacete: No Data";
                 }
-
-            }
-            Text {
-                text: "Head: " + (impactVisualizer.headImpact ? "IMPACT" : "Safe")
-                color: impactVisualizer.headImpact ? "red" : "green"
-            }
-            Text {
-                text: "Chest: " + (impactVisualizer.chestImpact ? "IMPACT" : "Safe")
-                color: impactVisualizer.chestImpact ? "red" : "green"
-            }
-            Text {
-                text: "Belly: " + (impactVisualizer.bellyImpact ? "IMPACT" : "Safe")
-                color: impactVisualizer.bellyImpact ? "red" : "green"
-            }
-            Text {
-                text: "Feet: " + (impactVisualizer.feetImpact ? "IMPACT" : "Safe")
-                color: impactVisualizer.feetImpact ? "red" : "green"
+                font.pixelSize: 14
             }
 
+            // Cinto (Chest)
+            Text {
+                text: {
+                    var color = impactVisualizer.chestLedColor;
+                    this.color = (color.toString() === "#ffffff") ? "black" : color;
+
+                    if (color.toString() === "#ff0000") return "Cinto: UNSAFE (IMPACT)";
+                    else if (color.toString() === "#ffff00") return "Cinto: WARNING - UNSAFE";
+                    else if (color.toString() === "#32cd32") return "Cinto: SAFE";
+                    else return "Cinto: No Data";
+                }
+                font.pixelSize: 14
+            }
+
+            // Travaquedas (Belly)
+            Text {
+                text: {
+                    var color = impactVisualizer.bellyLedColor;
+                    this.color = (color.toString() === "#ffffff") ? "black" : color;
+
+                    if (color.toString() === "#ff0000") return "Travaquedas: UNSAFE (IMPACT)";
+                    else if (color.toString() === "#ffff00") return "Travaquedas: WARNING - UNSAFE";
+                    else if (color.toString() === "#32cd32") return "Travaquedas: SAFE";
+                    else return "Travaquedas: No Data";
+                }
+                font.pixelSize: 14
+            }
+
+            // Botas (Feet)
+            Text {
+                text: {
+                    var color = impactVisualizer.feetLedColor;
+                    this.color = (color.toString() === "#ffffff") ? "black" : color;
+
+                    if (color.toString() === "#ff0000") return "Botas: UNSAFE (IMPACT)";
+                    else if (color.toString() === "#ffff00") return "Botas: WARNING - UNSAFE";
+                    else if (color.toString() === "#32cd32") return "Botas: SAFE";
+                    else return "Botas: No Data";
+                }
+                font.pixelSize: 14
+            }
         }
     }
+
+    Row {
+        id: footer
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 50
+        //spacing: 8  // Space between image and text
+
+        Image {
+            id: logoOttertech
+            source: "qrc:/logoOttertechs.png"
+            height: developedByText.height * 0.9  // Slightly smaller than text height
+            width: height  // Keep aspect ratio (assuming square logo)
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: developedByText
+            text: "Developed by Ottertechs"
+            color: "black"  // Or your preferred color
+            font.pixelSize: 14
+            anchors.verticalCenter: logoOttertech.verticalCenter
+        }
+    }
+        Row {
+            id: i
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottomMargin: -10
+            spacing: 15  // Space between image and text
+
+        Image {
+            id: logoEolen
+            source: "qrc:/logo_eolen.png"
+            height: 100  // Slightly smaller than text height
+            width: height  // Keep aspect ratio (assuming square logo)
+            fillMode: Image.PreserveAspectFit
+        }
+        }
+
 }

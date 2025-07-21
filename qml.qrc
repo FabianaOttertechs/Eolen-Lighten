@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>HumanBody.png</file>
         <file>leds.qml</file>
+        <file>logo_eolen.png</file>
+        <file>logoOttertechs.png</file>
     </qresource>
 </RCC>

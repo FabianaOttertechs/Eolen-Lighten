@@ -76,7 +76,10 @@ class ImpactVisualizer : public QQuickItem
     Q_PROPERTY(bool chestImpact READ chestImpact WRITE setChestImpact NOTIFY chestImpactChanged)
     Q_PROPERTY(bool bellyImpact READ bellyImpact WRITE setBellyImpact NOTIFY bellyImpactChanged)
     Q_PROPERTY(bool feetImpact READ feetImpact WRITE setFeetImpact NOTIFY feetImpactChanged)
+
+    //Connection properties
     Q_PROPERTY(bool webSocketConnected READ isWebSocketConnected NOTIFY webSocketConnectedChanged)
+    Q_PROPERTY(QString connectionStatus READ connectionStatus NOTIFY connectionStatusChanged)
 
     // LED Color properties (new)
     Q_PROPERTY(QColor headLedColor READ headLedColor WRITE setHeadLedColor NOTIFY headLedColorChanged)
@@ -87,8 +90,7 @@ class ImpactVisualizer : public QQuickItem
 public:
     explicit ImpactVisualizer(QQuickItem *parent = nullptr);
     Q_INVOKABLE void startConnection();
-    QString connectionStatus() const;
-
+    Q_INVOKABLE QString connectionStatus() const;
     // Impact getters (existing)
     bool headImpact() const;
     bool chestImpact() const;
@@ -119,6 +121,10 @@ public slots:
     void triggerChestImpact();
     void triggerBellyImpact();
     void triggerFeetImpact();
+    void triggerHeadWarning();
+    void triggerChestWarning();
+    void triggerBellyWarning();
+    void triggerFeetWarning();
 
     // LED control methods (new)
     void setLedColor(const QString &zone, const QString &color);
@@ -131,7 +137,7 @@ private slots:
     void onDisconnected();
     void onMessageReceived(const QString &message);
     void onError(QAbstractSocket::SocketError error);
-    void handleSocketStateChange(QAbstractSocket::SocketState state);
+    //void handleSocketStateChange(QAbstractSocket::SocketState state);
 
 signals:
     // Impact signals (existing)
