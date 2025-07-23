@@ -142,7 +142,7 @@ ImpactVisualizer::ImpactVisualizer(QQuickItem *parent)
     connect(m_socket, &QWebSocket::disconnected, this, &ImpactVisualizer::onDisconnected);
     connect(m_socket, &QWebSocket::textMessageReceived,
             this, &ImpactVisualizer::onMessageReceived);
-    connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
+    connect(m_socket, &QWebSocket::errorOccurred,
             this, &ImpactVisualizer::onError);
     connect(m_socket, &QWebSocket::stateChanged,
             this, &ImpactVisualizer::connectionStatus);
@@ -280,7 +280,7 @@ void ImpactVisualizer::setLedColor(const QString &zone, const QString &color) {
     } else if (color.compare("green", Qt::CaseInsensitive) == 0) {
         qColor = QColor("#32cd32");
     } else if (color.compare("yellow", Qt::CaseInsensitive) == 0) {
-        qColor = Qt::yellow;
+        qColor = QColor("#ffd300");
     } else {
         qColor = Qt::white;
     }
@@ -352,16 +352,16 @@ void ImpactVisualizer::triggerFeetImpact() {
 }
 // Adicionando trigger para warning
 void ImpactVisualizer::triggerHeadWarning() {
-    setHeadLedColor(Qt::yellow);
+    setHeadLedColor(QColor("#ffd300"));
 }
 void ImpactVisualizer::triggerChestWarning() {
-    setChestLedColor(Qt::yellow);
+    setChestLedColor(QColor("#ffd300"));
 }
 void ImpactVisualizer::triggerBellyWarning() {
-    setBellyLedColor(Qt::yellow);
+    setBellyLedColor(QColor("#ffd300"));
 }
 void ImpactVisualizer::triggerFeetWarning() {
-    setFeetLedColor(Qt::yellow);
+    setFeetLedColor(QColor("#ffd300"));
 }
 void ImpactVisualizer::initializeConnection()
 {
@@ -394,7 +394,7 @@ void ImpactVisualizer::connectWebSocket()
     // } else {
     //     serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";
     // }
-    serverUrl = "wss://211b584c6427.ngrok-free.app/socket.io/?EIO=4&transport=websocket";//"ws://localhost:5000/socket.io/?EIO=4&transport=websocket";
+    serverUrl = "ws://localhost:5000/socket.io/?EIO=4&transport=websocket";//"wss://211b584c6427.ngrok-free.app/socket.io/?EIO=4&transport=websocket";
     qDebug() << "Connecting to WebSocket:" << serverUrl;
 
     m_handshakeCompleted = false;
@@ -438,7 +438,7 @@ void ImpactVisualizer::onError(QAbstractSocket::SocketError error)
     QString errorMsg;
     switch(error) {
     case QAbstractSocket::ConnectionRefusedError:
-        errorMsg = "Servidor recusou a conexão (pode estar offline)";
+        errorMsg = "Servidor recusou a conexão";
         break;
     case QAbstractSocket::RemoteHostClosedError:
         errorMsg = "Servidor fechou a conexão";
@@ -450,10 +450,10 @@ void ImpactVisualizer::onError(QAbstractSocket::SocketError error)
         errorMsg = "Timeout de conexão";
         break;
     default:
-        errorMsg = m_socket->errorString();
+        errorMsg = QString("Erro de socket: %1").arg(error);
     }
-
     qDebug() << "WebSocket Error:" << errorMsg;
+    //emit connectionError(errorMsg);
 }
 
 void ImpactVisualizer::onMessageReceived(const QString &message)

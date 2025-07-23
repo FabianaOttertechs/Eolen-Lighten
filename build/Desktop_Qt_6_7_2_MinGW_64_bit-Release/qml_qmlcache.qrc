@@ -4,5 +4,7 @@
         <file alias="main.qml">../../main.qml</file>
         <file alias="HumanBody.png">../../HumanBody.png</file>
         <file alias="leds.qml">../../leds.qml</file>
+        <file alias="logo_eolen.png">../../logo_eolen.png</file>
+        <file alias="logoOttertechs.png">../../logoOttertechs.png</file>
     </qresource>
 </RCC>

@@ -7,14 +7,25 @@ import os
 from threading import Thread
 import subprocess
 
+'''
+1. Instale o Python 3.x
+2. Extraia o zip
+3. No terminal, vá até a pasta extraída
+4. Crie um ambiente virtual (opcional):
+   python -m venv venv
+   source venv/bin/activate  (Linux/macOS)
+   venv\Scripts\activate     (Windows)
+5. Instale as dependências:
+   pip install -r requirements.txt
+6. Execute o servidor:
+   python app.py
+7. Acesse no navegador:
+   http://localhost:5000
 
+'''
 app = Flask(__name__)
 CORS(app)
-#socketio = SocketIO(app, 
-#                   cors_allowed_origins="*",
-#                   async_mode='eventlet',  # Explicitly specify async mode
-#                   logger=True,            # Enable logging
-#                   engineio_logger=True)   # Enable engineio logging
+
 socketio = SocketIO(app, 
                    ping_timeout=60,
                    ping_interval=40,
@@ -29,12 +40,12 @@ connected_clients = set()
 @socketio.on('led_update')
 def handle_led_update(data):
     # This will broadcast to all clients except sender
-    emit('led_update', data, broadcast=True, include_self=False)
+    emit('led_update', data, broadcast=True, include_self=True)
     print(f"Broadcasting LED update: {data}")
 
 @socketio.on('impact_update') 
 def handle_impact_update(data):
-    emit('impact_update', data, broadcast=True, include_self=False)
+    emit('impact_update', data, broadcast=True, include_self=True)
     print(f"Broadcasting impact update: {data}")
 
 @socketio.on('connect')
@@ -83,31 +94,6 @@ def get_status():
         "last_update": last_update
     })
 
-#@app.route('/api/led', methods=['POST'])
-#def set_led():
-#    """Set individual LED color"""
-#    global last_update
-#    
-#    data = request.get_json()
-#    led_zone = data.get('led')
-#    color = data.get('color')
-#    
-#    if led_zone not in led_states:
-#        return jsonify({"success": False, "error": "Invalid LED zone"}), 400
-#    
-    # Update LED state
-#    led_states[led_zone] = color
-#    last_update = time.time()
-#    
-#    print(f"LED {led_zone} set to {color}")
-#    socketio.emit('led_update', {'led': led_zone, 'color': color})
-#
-#    return jsonify({
-#        "success": True,
-#        "led": led_zone,
-#        "color": color,
-#        "timestamp": last_update
-#    })
 @app.route('/api/led', methods=['POST'])
 def set_led():
     """Set individual LED color"""
@@ -168,7 +154,7 @@ def reset_all_leds():
         "impacts": impact_states,
         "timestamp": time.time()
     })
-    socketio.emit('led_update', {'led': 'all', 'color': 'white'}, broadcast=True)
+    socketio.emit('led_update', {'led': 'all', 'color': 'white'})
 
     return jsonify({
         "success": True,
@@ -178,43 +164,6 @@ def reset_all_leds():
         "timestamp": last_update
     })
 
-#@app.route('/api/impact', methods=['POST'])
-#def set_impact():
-#    """Set impact status for a zone"""
-#    global last_update
-#    
-#    data = request.get_json()
-#    zone = data.get('zone')
-#    impact = data.get('impact', False)
-#    
-#    if zone not in impact_states:
-#        return jsonify({"success": False, "error": "Invalid impact zone"}), 400
-#    
-#    # Update impact state
-#    impact_states[zone] = impact
-#    
-    # Automatically set LED color based on impact
-#    if impact:
-#        led_states[zone] = "red"
-#    else:
-#        led_states[zone] = "green"
-#    
-#    last_update = time.time()
-#    
-#    print(f"Impact {zone} set to {impact}")
-#    socketio.emit('impact_update', {
-#    'zone': zone,
-#    'impact': impact,
-#    'led_color': led_states[zone]
-#})
-#
-#    return jsonify({
-#        "success": True,
-#        "zone": zone,
-#        "impact": impact,
-#        "led_color": led_states[zone],
-#        "timestamp": last_update
-#    })
 @app.route('/api/impact', methods=['POST'])
 def set_impact():
     """Set impact status for a zone"""

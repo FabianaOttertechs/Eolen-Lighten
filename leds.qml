@@ -316,7 +316,7 @@ Window {
 
     function sendLedCommand(zone, color) {
         var xhr = new XMLHttpRequest();
-        var url = "https://211b584c6427.ngrok-free.app/api/led";//"http://localhost:5000/api/led";
+        var url = "http://localhost:5000/api/led";//"https://211b584c6427.ngrok-free.app/api/led";
         var data = JSON.stringify({
             led: zone,
             color: color
@@ -447,85 +447,6 @@ Window {
             anchors.top: parent.top
             spacing: 10
             padding: 20
-            //visible: !selfTestRunning
-
-            // Head LED controls
-            // Row {
-            //     spacing: 5
-            //     Button {
-            //         text: "Head Green"
-            //         onClicked: {
-            //             console.log("🟢 Head Green button pressed");
-            //             sendLedCommand("head", "green");
-            //         }
-            //     }
-            //     Button {
-            //         text: "Head Red"
-            //         onClicked: {
-            //             console.log("🔴 Head Red button pressed");
-            //             sendLedCommand("head", "red");
-            //         }
-            //     }
-            // }
-
-            // // Chest LED controls
-            // Row {
-            //     spacing: 5
-            //     Button {
-            //         text: "Chest Green"
-            //         onClicked: {
-            //             console.log("🟢 Chest Green button pressed");
-            //             //sendLedCommand("chest", "green");
-            //             safeSendCommand("chest", "green");
-            //         }
-            //     }
-            //     Button {
-            //         text: "Chest Red"
-            //         onClicked: {
-            //             console.log("🔴 Chest Red button pressed");
-            //             //sendLedCommand("chest", "red");
-            //             safeSendCommand("chest", "red");
-            //         }
-            //     }
-            // }
-
-            // // Belly LED controls
-            // Row {
-            //     spacing: 5
-            //     Button {
-            //         text: "Belly Green"
-            //         onClicked: {
-            //             console.log("🟢 Belly Green button pressed");
-            //             sendLedCommand("belly", "green");
-            //         }
-            //     }
-            //     Button {
-            //         text: "Belly Red"
-            //         onClicked: {
-            //             console.log("🔴 Belly Red button pressed");
-            //             sendLedCommand("belly", "red");
-            //         }
-            //     }
-            // }
-
-            // // Feet LED controls
-            // Row {
-            //     spacing: 5
-            //     Button {
-            //         text: "Feet Green"
-            //         onClicked: {
-            //             console.log("🟢 Feet Green button pressed");
-            //             sendLedCommand("feet", "green");
-            //         }
-            //     }
-            //     Button {
-            //         text: "Feet Red"
-            //         onClicked: {
-            //             console.log("🔴 Feet Red button pressed");
-            //             sendLedCommand("feet", "red");
-            //         }
-            //     }
-            // }
 
             // Reset button
             Rectangle {
@@ -560,10 +481,7 @@ Window {
             padding: 20
 
             Text {
-                // text: "Estado: " + impactVisualizer.connectionStatus()
-                // color: impactVisualizer.webSocketConnected ? "green" : "red"
-                // font.bold: true
-                // font.pixelSize: 14
+
                 text: {
                         if (impactVisualizer.webSocketConnected) {
                             return "Estado: Conectado";
@@ -575,9 +493,7 @@ Window {
                     font.bold: true
                     font.pixelSize: 14
 
-                    // Debug connection status changes
-                    onTextChanged: console.log("Connection status changed:", text, "Color:", color)
-            }
+                }
 
             // Capacete (Head)
             Text {
@@ -586,7 +502,7 @@ Window {
                     this.color = (color.toString() === "#ffffff") ? "black" : color;
 
                     if (color.toString() === "#ff0000") return "Capacete: UNSAFE (IMPACT)";
-                    else if (color.toString() === "#ffff00") return "Capacete: WARNING - UNSAFE";
+                    else if (color.toString() === "#ffd300") return "Capacete: WARNING - UNSAFE";
                     else if (color.toString() === "#32cd32") return "Capacete: SAFE";
                     else return "Capacete: No Data";
                 }
@@ -600,7 +516,7 @@ Window {
                     this.color = (color.toString() === "#ffffff") ? "black" : color;
 
                     if (color.toString() === "#ff0000") return "Cinto: UNSAFE (IMPACT)";
-                    else if (color.toString() === "#ffff00") return "Cinto: WARNING - UNSAFE";
+                    else if (color.toString() === "#ffd300") return "Cinto: WARNING - UNSAFE";
                     else if (color.toString() === "#32cd32") return "Cinto: SAFE";
                     else return "Cinto: No Data";
                 }
@@ -614,7 +530,7 @@ Window {
                     this.color = (color.toString() === "#ffffff") ? "black" : color;
 
                     if (color.toString() === "#ff0000") return "Travaquedas: UNSAFE (IMPACT)";
-                    else if (color.toString() === "#ffff00") return "Travaquedas: WARNING - UNSAFE";
+                    else if (color.toString() === "#ffd300") return "Travaquedas: WARNING - UNSAFE";
                     else if (color.toString() === "#32cd32") return "Travaquedas: SAFE";
                     else return "Travaquedas: No Data";
                 }
@@ -628,7 +544,7 @@ Window {
                     this.color = (color.toString() === "#ffffff") ? "black" : color;
 
                     if (color.toString() === "#ff0000") return "Botas: UNSAFE (IMPACT)";
-                    else if (color.toString() === "#ffff00") return "Botas: WARNING - UNSAFE";
+                    else if (color.toString() === "#ffd300") return "Botas: WARNING - UNSAFE";
                     else if (color.toString() === "#32cd32") return "Botas: SAFE";
                     else return "Botas: No Data";
                 }
@@ -641,7 +557,7 @@ Window {
         id: footer
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottomMargin: 50
+        anchors.bottomMargin: 40
         //spacing: 8  // Space between image and text
 
         Image {
@@ -664,7 +580,7 @@ Window {
             id: i
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: -10
+            anchors.bottomMargin: -25
             spacing: 15  // Space between image and text
 
         Image {
@@ -674,6 +590,6 @@ Window {
             width: height  // Keep aspect ratio (assuming square logo)
             fillMode: Image.PreserveAspectFit
         }
-        }
+    }
 
 }

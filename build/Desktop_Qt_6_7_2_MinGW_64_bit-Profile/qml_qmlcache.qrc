@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<RCC>
-    <qresource prefix="/">
-        <file alias="main.qml">../../main.qml</file>
-        <file alias="HumanBody.png">../../HumanBody.png</file>
-        <file alias="leds.qml">../../leds.qml</file>
-    </qresource>
-</RCC>
